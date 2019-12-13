@@ -50,7 +50,7 @@ bool WalletFrame::addWallet(const QString& name, WalletModel *walletModel)
     walletView->showOutOfSyncWarning(bOutOfSync);
 
      /* TODO we should goto the currently selected page once dynamically adding wallets is supported */
-    walletView->gotoOverviewPage();
+    walletView->gotoDashboardPage();
     walletStack->addWidget(walletView);
     mapWalletViews[name] = walletView;
 
@@ -106,6 +106,13 @@ void WalletFrame::showOutOfSyncWarning(bool fShow)
     QMap<QString, WalletView*>::const_iterator i;
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
         i.value()->showOutOfSyncWarning(fShow);
+}
+
+void WalletFrame::gotoDashboardPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoDashboardPage();
 }
 
 void WalletFrame::gotoOverviewPage()

@@ -21,6 +21,7 @@
 #include "walletmodel.h"
 
 #include "ui_interface.h"
+#include "dashboardpage.h"
 
 #include <QAction>
 #include <QActionGroup>
@@ -40,6 +41,7 @@ WalletView::WalletView(const PlatformStyle *platformStyle, QWidget *parent):
 {
     // Create tabs
     overviewPage = new OverviewPage(platformStyle);
+    dashboardpage = new DashboardPage();
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -76,6 +78,7 @@ WalletView::WalletView(const PlatformStyle *platformStyle, QWidget *parent):
     usedSendingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::SendingTab, this);
     usedReceivingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::ReceivingTab, this);
 
+    addWidget(dashboardpage);
     addWidget(overviewPage);
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
@@ -202,6 +205,11 @@ void WalletView::processNewTransaction(const QModelIndex& parent, int start, int
     QString label = ttm->data(index, TransactionTableModel::LabelRole).toString();
 
     Q_EMIT incomingTransaction(date, walletModel->getOptionsModel()->getDisplayUnit(), amount, type, address, label);
+}
+
+void WalletView::gotoDashboardPage()
+{
+    setCurrentWidget(dashboardpage);
 }
 
 void WalletView::gotoOverviewPage()

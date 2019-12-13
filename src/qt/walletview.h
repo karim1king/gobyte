@@ -20,6 +20,7 @@ class SendCoinsRecipient;
 class TransactionView;
 class WalletModel;
 class AddressBookPage;
+class DashboardPage;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -60,6 +61,7 @@ private:
     ClientModel *clientModel;
     WalletModel *walletModel;
 
+    DashboardPage* dashboardpage;
     OverviewPage *overviewPage;
     QWidget *transactionsPage;
     ReceiveCoinsDialog *receiveCoinsPage;
@@ -75,6 +77,8 @@ private:
     const PlatformStyle *platformStyle;
 
 public Q_SLOTS:
+    /** Switch to dashboard page */
+     void gotoDashboardPage();
     /** Switch to overview (home) page */
     void gotoOverviewPage();
     /** Switch to history (transactions) page */

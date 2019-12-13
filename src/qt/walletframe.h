@@ -55,6 +55,8 @@ private:
     WalletView *currentWalletView();
 
 public Q_SLOTS:
+    /** Switch to dashboardpage (home) page */
+    void gotoDashboardPage();
     /** Switch to overview (home) page */
     void gotoOverviewPage();
     /** Switch to history (transactions) page */

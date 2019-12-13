@@ -35,6 +35,7 @@
 #include "util.h"
 #include "masternode-sync.h"
 #include "masternodelist.h"
+#include "balancebar.h"
 
 #include <iostream>
 
@@ -89,6 +90,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
     progressBar(0),
     progressDialog(0),
     appMenuBar(0),
+    dashboardAction(0),
     overviewAction(0),
     historyAction(0),
     masternodeAction(0),
@@ -286,14 +288,27 @@ void BitcoinGUI::createActions()
     QActionGroup *tabGroup = new QActionGroup(this);
 
     QString theme = GUIUtil::getThemeName();
+
+    dashboardAction = new QAction(QIcon(":/icons/" + theme + "/overview"), tr("&Dashboard"), this);
+    dashboardAction->setStatusTip(tr("Show general dashboard of wallet"));
+    dashboardAction->setToolTip(dashboardAction->statusTip());
+    dashboardAction->setCheckable(true);
+#ifdef Q_OS_MAC
+    dashboardAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
+#else
+    dashboardAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
+#endif
+    tabGroup->addAction(dashboardAction);
+
+
     overviewAction = new QAction(QIcon(":/icons/" + theme + "/overview"), tr("&Overview"), this);
     overviewAction->setStatusTip(tr("Show general overview of wallet"));
     overviewAction->setToolTip(overviewAction->statusTip());
     overviewAction->setCheckable(true);
 #ifdef Q_OS_MAC
-    overviewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
+    overviewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
 #else
-    overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
+    overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
 #endif
     tabGroup->addAction(overviewAction);
 
@@ -359,6 +374,8 @@ void BitcoinGUI::createActions()
     // can be triggered from the tray menu, and need to show the GUI to be useful.
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
+    connect(dashboardAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(dashboardAction, SIGNAL(triggered()), this, SLOT(gotoDashboardPage()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(gotoSendCoinsPage()));
     connect(sendCoinsMenuAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -557,6 +574,7 @@ void BitcoinGUI::createToolBars()
     {
         QToolBar *toolbar = new QToolBar(tr("Tabs toolbar"));
         toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        toolbar->addAction(dashboardAction);
         toolbar->addAction(overviewAction);
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
@@ -567,7 +585,7 @@ void BitcoinGUI::createToolBars()
             toolbar->addAction(masternodeAction);
         }
         toolbar->setMovable(false); // remove unused icon in upper left corner
-        overviewAction->setChecked(true);
+        dashboardAction->setChecked(true);
 
         /** Create additional container for toolbar and walletFrame and make it the central widget.
             This is a workaround mostly for toolbar styling on Mac OS but should work fine for every other OSes too.
@@ -579,7 +597,20 @@ void BitcoinGUI::createToolBars()
         layout->setContentsMargins(QMargins());
         QWidget *containerWidget = new QWidget();
         containerWidget->setLayout(layout);
-        setCentralWidget(containerWidget);
+
+        BalanceBar* balanceBar = new BalanceBar();
+        balanceBar->setFixedWidth (303);
+
+        QHBoxLayout *hLayout = new QHBoxLayout();
+        hLayout->addWidget(balanceBar);
+        hLayout->addWidget(containerWidget);
+        hLayout->setSpacing(0);
+        hLayout->setContentsMargins(QMargins());
+
+        QWidget *mainContainerWidget = new QWidget();
+        mainContainerWidget->setLayout(hLayout);
+
+        setCentralWidget(mainContainerWidget);
     }
 #endif // ENABLE_WALLET
 }
@@ -700,6 +731,7 @@ void BitcoinGUI::removeAllWallets()
 
 void BitcoinGUI::setWalletActionsEnabled(bool enabled)
 {
+    dashboardAction->setEnabled(enabled);
     overviewAction->setEnabled(enabled);
     sendCoinsAction->setEnabled(enabled);
     sendCoinsMenuAction->setEnabled(enabled);
@@ -862,6 +894,12 @@ void BitcoinGUI::openClicked()
     {
         Q_EMIT receivedURI(dlg.getURI());
     }
+}
+
+void BitcoinGUI::gotoDashboardPage()
+{
+    dashboardAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoDashboardPage();
 }
 
 void BitcoinGUI::gotoOverviewPage()

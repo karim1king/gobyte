@@ -32,6 +32,7 @@ class WalletModel;
 class HelpMessageDialog;
 class ModalOverlay;
 class MasternodeList;
+class BalanceBar;
 
 class CWallet;
 
@@ -94,6 +95,7 @@ private:
     QProgressDialog *progressDialog;
 
     QMenuBar *appMenuBar;
+    QAction *dashboardAction;
     QAction *overviewAction;
     QAction *historyAction;
     QAction *masternodeAction;
@@ -213,6 +215,8 @@ public Q_SLOTS:
 
 private Q_SLOTS:
 #ifdef ENABLE_WALLET
+    /** Switch to dashboard (home) page */
+    void gotoDashboardPage();
     /** Switch to overview (home) page */
     void gotoOverviewPage();
     /** Switch to history (transactions) page */

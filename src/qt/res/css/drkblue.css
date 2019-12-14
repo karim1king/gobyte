@@ -1,8 +1,28 @@
+QLabel#totalBalance {
+font-family: Roboto;
+font-style: normal;
+font-size: 24px;
+color: #EEEEEE;
+}
+
+QListView#walletsListView {
+background-color: transparent
+}
+
+QListView#walletsListView QLabel {
+color: #EEEEEE;
+}
+
+BitcoinGUI{
+background-color:#161F27;
+}
+
 WalletFrame {
-border-image: url(':/images/drkblue/drkblue_walletFrame_bg') 0 0 0 0 stretch stretch;
+/*border-image: url(':/images/drkblue/drkblue_walletFrame_bg') 0 0 0 0 stretch stretch;*/
 border-top:0px solid #000;
 margin:0;
 padding:0;
+background-color:#161F27;
 }
 
 QStatusBar {

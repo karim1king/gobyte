@@ -2,12 +2,14 @@
 #define BALANCEBAR_H
 
 #include <QWidget>
+#include <QToolBar>
+#include <QList>
 
 class BalanceBar : public QWidget
 {
     Q_OBJECT
 public:
-    explicit BalanceBar(QWidget *parent = nullptr);
+    explicit BalanceBar(const QList<QAction*>& actionsList, QWidget *parent = nullptr);
 
 //signals:
 

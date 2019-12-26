@@ -572,34 +572,26 @@ void BitcoinGUI::createToolBars()
 #ifdef ENABLE_WALLET
     if(walletFrame)
     {
-        QToolBar *toolbar = new QToolBar(tr("Tabs toolbar"));
-        toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        toolbar->addAction(dashboardAction);
-        toolbar->addAction(overviewAction);
-        toolbar->addAction(sendCoinsAction);
-        toolbar->addAction(receiveCoinsAction);
-        toolbar->addAction(historyAction);
+        QList<QAction*> actionsList {dashboardAction, overviewAction, sendCoinsAction, receiveCoinsAction, historyAction};
         QSettings settings;
         if (settings.value("fShowMasternodesTab").toBool())
         {
-            toolbar->addAction(masternodeAction);
+            actionsList.append (masternodeAction);
         }
-        toolbar->setMovable(false); // remove unused icon in upper left corner
         dashboardAction->setChecked(true);
 
         /** Create additional container for toolbar and walletFrame and make it the central widget.
             This is a workaround mostly for toolbar styling on Mac OS but should work fine for every other OSes too.
         */
         QVBoxLayout *layout = new QVBoxLayout;
-        layout->addWidget(toolbar);
         layout->addWidget(walletFrame);
         layout->setSpacing(0);
         layout->setContentsMargins(QMargins());
         QWidget *containerWidget = new QWidget();
         containerWidget->setLayout(layout);
 
-        BalanceBar* balanceBar = new BalanceBar();
-        balanceBar->setFixedWidth (303);
+        BalanceBar* balanceBar = new BalanceBar(actionsList);
+        balanceBar->setFixedWidth (200);
 
         QHBoxLayout *hLayout = new QHBoxLayout();
         hLayout->addWidget(balanceBar);

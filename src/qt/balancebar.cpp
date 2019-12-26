@@ -1,4 +1,3 @@
-#include "balancebar.h"
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -6,6 +5,10 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QString>
+#include <QStylePainter>
+#include <QToolButton>
+
+#include "balancebar.h"
 #include "guiutil.h"
 
 struct WalletInfo
@@ -57,14 +60,53 @@ public:
     }
 };
 
-
-BalanceBar::BalanceBar(QWidget *parent) : QWidget(parent)
+class CustomToolButton : public QToolButton
 {
+public:
+    CustomToolButton(QAction* action){
+        setDefaultAction (action);
+    }
+    void paintEvent (QPaintEvent*)
+    {
+        QStylePainter sp(this);
+        QStyleOptionToolButton opt;
+        initStyleOption(&opt);
+        const QString strText = opt.text;
+        const QIcon icn = opt.icon;
+        //draw background
+        opt.text.clear();
+        opt.icon = QIcon();
+        sp.drawComplexControl(QStyle::CC_ToolButton, opt);
+        //draw content
+        QRect rect = opt.rect;
+        rect.setLeft (rect.left() + 30);
+        sp.drawItemPixmap(rect, Qt::AlignVCenter, icn.pixmap(opt.iconSize));
+        opt.text = strText;
+        rect.setLeft (rect.left() + opt.iconSize.width() + 12);
+        sp.drawItemText(rect, Qt::AlignVCenter, opt.palette, true, opt.text, QPalette::ButtonText);
+        //sp.drawControl(QStyle::CE_ToolButtonLabel, opt);
+    }
+};
+
+BalanceBar::BalanceBar(const QList<QAction*>& actionsList, QWidget *parent) : QWidget(parent)
+{
+    QToolBar *toolBar = new QToolBar(tr("Tabs toolbar"));
+    toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    toolBar->setMovable(false); // remove unused icon in upper left corner
+
+    for (int i = 0; i < actionsList.size(); ++i){
+        CustomToolButton* button = new CustomToolButton(actionsList[i]);
+        toolBar->addWidget (button);
+    }
+
+    toolBar->setOrientation (Qt::Vertical);
+    toolBar->setIconSize (QSize(24, 24));
+
     QLabel* totalBalance = new QLabel("Total Balance<br>9.49<br> Currency <span style=\"color:#1FB0D0\">USD</span>");
     totalBalance->setObjectName ("totalBalance");
 
     totalBalance->setFixedHeight(123);
-    QListWidget *walletsListView = new QListWidget();
+/*    QListWidget *walletsListView = new QListWidget();
     new WalletInfoButtonWidget(walletsListView);
     walletsListView->setSelectionMode(QAbstractItemView::NoSelection);
     walletsListView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -76,13 +118,13 @@ BalanceBar::BalanceBar(QWidget *parent) : QWidget(parent)
     for (int i = 0; i < list.size(); ++i)
         new WalletInfoWidget(list[i], walletsListView);
 
-    walletsListView->setObjectName ("walletsListView");
+    walletsListView->setObjectName ("walletsListView");*/
 
     QVBoxLayout *balanceBarLayout = new QVBoxLayout();
     balanceBarLayout->setSpacing(0);
-    balanceBarLayout->setContentsMargins(54,-1,54,-1);
+    balanceBarLayout->setContentsMargins(0,0,0,0);
     balanceBarLayout->addWidget(totalBalance);
-    balanceBarLayout->addWidget(walletsListView);
+    balanceBarLayout->addWidget(toolBar);
     balanceBarLayout->setAlignment(Qt::AlignTop);
     setLayout (balanceBarLayout);
 

@@ -79,12 +79,15 @@ public:
         sp.drawComplexControl(QStyle::CC_ToolButton, opt);
         //draw content
         QRect rect = opt.rect;
-        rect.setLeft (rect.left() + 30);
+        rect.setLeft (rect.left() + 14);
         sp.drawItemPixmap(rect, Qt::AlignVCenter, icn.pixmap(opt.iconSize));
         opt.text = strText;
         rect.setLeft (rect.left() + opt.iconSize.width() + 12);
+
+        if (isChecked())
+            opt.palette.setColor(QPalette::ButtonText, "#FFFFFF");
+
         sp.drawItemText(rect, Qt::AlignVCenter, opt.palette, true, opt.text, QPalette::ButtonText);
-        //sp.drawControl(QStyle::CE_ToolButtonLabel, opt);
     }
 };
 
@@ -122,7 +125,7 @@ BalanceBar::BalanceBar(const QList<QAction*>& actionsList, QWidget *parent) : QW
 
     QVBoxLayout *balanceBarLayout = new QVBoxLayout();
     balanceBarLayout->setSpacing(0);
-    balanceBarLayout->setContentsMargins(0,0,0,0);
+    balanceBarLayout->setContentsMargins(16,0,16,0);
     balanceBarLayout->addWidget(totalBalance);
     balanceBarLayout->addWidget(toolBar);
     balanceBarLayout->setAlignment(Qt::AlignTop);

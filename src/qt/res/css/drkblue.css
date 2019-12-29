@@ -5,6 +5,14 @@ font-size: 24px;
 color: #EEEEEE;
 }
 
+QLabel#dashboardLabel {
+font: 28px 'Exo 2', sans-serif;
+font-style: normal;
+font-weight: 600;
+line-height: 150%;
+color: #FFFFFF;
+}
+
 QListView#walletsListView {
 background-color: transparent
 }
@@ -74,7 +82,7 @@ min-height:2.5em;
 width: 168px;
 height: 48px;
 padding: 0px 20px 0px 20px;
-font-family: Exo 2;
+font-family: sans-serif;
 font-style: normal;
 font-weight: 500;
 font-size: 14px;
@@ -83,8 +91,9 @@ color:#A7BDD1;
 }
 
 QToolBar > QToolButton:checked {
-background-color:#4DA7BDD1;
-color:#000;
+background: #33405569;
+border-radius: 5px;
+color:#FFFFFF;
 font-weight:bold;
 }
 

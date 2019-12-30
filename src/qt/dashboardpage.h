@@ -14,4 +14,12 @@ public:
 //public slots:
 };
 
+class DashboardButton : public QWidget
+{
+    Q_OBJECT
+public:
+    DashboardButton (QString title, QString description, QColor color, QIcon icon);
+    void paintEvent(QPaintEvent *event);
+};
+
 #endif // DASHBOARDPAGE_H

@@ -93,7 +93,7 @@ public:
 
 BalanceBar::BalanceBar(const QList<QAction*>& actionsList, QWidget *parent) : QWidget(parent)
 {
-    QToolBar *toolBar = new QToolBar(tr("Tabs toolbar"));
+    QToolBar* toolBar = new QToolBar(tr("Tabs toolbar"));
     toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     toolBar->setMovable(false); // remove unused icon in upper left corner
 
@@ -102,11 +102,11 @@ BalanceBar::BalanceBar(const QList<QAction*>& actionsList, QWidget *parent) : QW
         toolBar->addWidget (button);
     }
 
-    toolBar->setOrientation (Qt::Vertical);
-    toolBar->setIconSize (QSize(24, 24));
+    toolBar->setOrientation(Qt::Vertical);
+    toolBar->setIconSize(QSize(24, 24));
 
     QLabel* totalBalance = new QLabel("Total Balance<br>9.49<br> Currency <span style=\"color:#1FB0D0\">USD</span>");
-    totalBalance->setObjectName ("totalBalance");
+    totalBalance->setObjectName("totalBalance");
 
     totalBalance->setFixedHeight(123);
 /*    QListWidget *walletsListView = new QListWidget();
@@ -123,7 +123,7 @@ BalanceBar::BalanceBar(const QList<QAction*>& actionsList, QWidget *parent) : QW
 
     walletsListView->setObjectName ("walletsListView");*/
 
-    QVBoxLayout *balanceBarLayout = new QVBoxLayout();
+    QVBoxLayout* balanceBarLayout = new QVBoxLayout();
     balanceBarLayout->setSpacing(0);
     balanceBarLayout->setContentsMargins(16,0,16,0);
     balanceBarLayout->addWidget(totalBalance);

@@ -289,7 +289,7 @@ void BitcoinGUI::createActions()
 
     QString theme = GUIUtil::getThemeName();
 
-    dashboardAction = new QAction(QIcon(":/icons/" + theme + "/overview"), tr("&Dashboard"), this);
+    dashboardAction = new QAction(QIcon(":/icons/bounty"), tr("&Dashboard"), this);
     dashboardAction->setStatusTip(tr("Show general dashboard of wallet"));
     dashboardAction->setToolTip(dashboardAction->statusTip());
     dashboardAction->setCheckable(true);
@@ -312,7 +312,7 @@ void BitcoinGUI::createActions()
 #endif
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(QIcon(":/icons/" + theme + "/send"), tr("&Send"), this);
+    sendCoinsAction = new QAction(QIcon(":/icons/icon_send"), tr("&Send"), this);
     sendCoinsAction->setStatusTip(tr("Send coins to a GoByte address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
@@ -327,7 +327,7 @@ void BitcoinGUI::createActions()
     sendCoinsMenuAction->setStatusTip(sendCoinsAction->statusTip());
     sendCoinsMenuAction->setToolTip(sendCoinsMenuAction->statusTip());
 
-    receiveCoinsAction = new QAction(QIcon(":/icons/" + theme + "/receiving_addresses"), tr("&Receive"), this);
+    receiveCoinsAction = new QAction(QIcon(":/icons/icon_receive"), tr("&Receive"), this);
     receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and gobyte: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
@@ -356,7 +356,7 @@ void BitcoinGUI::createActions()
 #ifdef ENABLE_WALLET
     QSettings settings;
     if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeAction = new QAction(QIcon(":/icons/" + theme + "/masternodes"), tr("&Masternodes"), this);
+        masternodeAction = new QAction(QIcon(":/icons/icon_masternodes"), tr("&Masternodes"), this);
         masternodeAction->setStatusTip(tr("Browse masternodes"));
         masternodeAction->setToolTip(masternodeAction->statusTip());
         masternodeAction->setCheckable(true);

@@ -172,6 +172,30 @@ BITCOIN_QT_H = \
   qt/winshutdownmonitor.h
 
 RES_ICONS = \
+  qt/res/icons/reddit.png \
+  qt/res/icons/twitter.png \
+  qt/res/icons/telegram.png \
+  qt/res/icons/youtube.png \
+  qt/res/icons/discord_community.png \
+  qt/res/icons/m_community.png \
+  qt/res/icons/facebook.png \
+  qt/res/icons/instagram.png \
+  qt/res/icons/notifications.png \
+  qt/res/icons/logo.png \
+  qt/res/icons/icon_governance.png \
+  qt/res/icons/icon_explorer.png \
+  qt/res/icons/icon_masternodes.png \
+  qt/res/icons/icon_exchanges.png \
+  qt/res/icons/icon_addresses.png \
+  qt/res/icons/icon_receive.png \
+  qt/res/icons/icon_private.png \
+  qt/res/icons/icon_send.png \
+  qt/res/icons/icon_dashboard.png \
+  qt/res/icons/mobile_application.png \
+  qt/res/icons/bounty.png \
+  qt/res/icons/hardware_wallets.png \
+  qt/res/icons/passive_income.png \
+  qt/res/icons/warning.png \
   qt/res/icons/bitcoin.ico \
   qt/res/icons/bitcoin.png \
   qt/res/icons/chevron.png \

@@ -289,7 +289,7 @@ void BitcoinGUI::createActions()
 
     QString theme = GUIUtil::getThemeName();
 
-    dashboardAction = new QAction(QIcon(":/icons/bounty"), tr("&Dashboard"), this);
+    dashboardAction = new QAction(QIcon(":/icons/icon_dashboard"), tr("&Dashboard"), this);
     dashboardAction->setStatusTip(tr("Show general dashboard of wallet"));
     dashboardAction->setToolTip(dashboardAction->statusTip());
     dashboardAction->setCheckable(true);

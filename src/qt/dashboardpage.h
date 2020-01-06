@@ -23,6 +23,7 @@ class DashboardPage : public QWidget
 public:
     explicit DashboardPage(QWidget *parent = nullptr);
     void setWalletModel(WalletModel *model);
+    void resizeEvent(QResizeEvent *event);
 
 private Q_SLOTS:
     void updateAdvancedPSUI(bool fShowAdvancedPSUI);

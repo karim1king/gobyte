@@ -10,8 +10,38 @@ background: #1A405569;
 border-radius: 5px;
 }
 
-DashboardPage QTableWidget{
-background-color: #405569
+.QTableView { /* Table - has to be selected as a class otherwise it throws off QCalendarWidget */
+    background:transparent;
+    alternate-background-color: #405569;
+    background-color: transparent;
+    border:0px solid #fff;
+}
+
+QTableView::item { /* Table Item */
+    background-color:#fcfcfc;
+    font-size:12px;
+}
+
+QTableView::item:selected { /* Table Item Selected */
+    background-color:#f0f0f0;
+    color:#333;
+}
+
+DashboardButton{
+    background: #1A405569;
+    border-radius: 5px;
+}
+
+DashboardPage QHeaderView::section {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 150%;
+    letter-spacing: 0.02em;
+    background: transparent;
+    color: #80A7BDD1;
+    border: 0px solid #000;
 }
 
 DashboardPage QLabel#titleLabel {
@@ -369,21 +399,6 @@ border-right: 0px solid #d7d7d7;
 .QScrollArea {
 background:transparent;
 border:0px;
-}
-
-.QTableView { /* Table - has to be selected as a class otherwise it throws off QCalendarWidget */
-background:transparent;
-border:0px solid #fff;
-}
-
-QTableView::item { /* Table Item */
-background-color:#fcfcfc;
-font-size:12px;
-}
-
-QTableView::item:selected { /* Table Item Selected */
-background-color:#f0f0f0;
-color:#333;
 }
 
 QScrollBar { /* Scroll Bar */

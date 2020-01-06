@@ -153,6 +153,7 @@ void WalletView::setWalletModel(WalletModel *walletModel)
 
     // Put transaction list in tabs
     transactionView->setModel(walletModel);
+    dashboardpage->setWalletModel(walletModel);
     overviewPage->setWalletModel(walletModel);
     QSettings settings;
     if (settings.value("fShowMasternodesTab").toBool()) {

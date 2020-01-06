@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QTableWidget>
 #include <QAbstractItemDelegate>
+#include <QDateTime>
 
 #include "transactiontablemodel.h"
 #include "init.h"
@@ -16,9 +17,116 @@
 #include "optionsmodel.h"
 #include "instantx.h"
 #include "clientmodel.h"
+#include "transactionrecord.h"
+#include "addresstablemodel.h"
 
 #define NUM_ITEMS 5
 #define NUM_ITEMS_ADV 7
+
+class LatestTransactionFilterProxy : public TransactionFilterProxy
+{
+private:
+    QStringList columns;
+    WalletModel *walletModel;
+
+    enum ColumnIndex {
+        BlockID = 0,
+        TxID = 1,
+        Amount = 2,
+        Date = 3,
+    };
+
+public:
+    LatestTransactionFilterProxy(WalletModel *model)
+    {
+        walletModel = model;
+        columns << tr("Block") << tr("Transaction ID") << BitcoinUnits::getAmountColumnTitle(walletModel->getOptionsModel()->getDisplayUnit()) << tr("Timestamp");
+    }
+
+    QString formatTxDate(const TransactionRecord *wtx) const
+    {
+        if(wtx->time)
+        {
+            return GUIUtil::dateTimeStr(wtx->time);
+        }
+        return QString();
+    }
+
+    QString lookupAddress(const std::string &address, bool tooltip) const
+    {
+        QString label = walletModel->getAddressTableModel()->labelForAddress(QString::fromStdString(address));
+        QString description;
+        if(!label.isEmpty())
+        {
+            description += label;
+        }
+        if(label.isEmpty() || tooltip)
+        {
+            description += QString(" (") + QString::fromStdString(address) + QString(")");
+        }
+        return description;
+    }
+
+    QString formatTxAmount(const TransactionRecord *wtx, bool showUnconfirmed, BitcoinUnits::SeparatorStyle separators) const
+    {
+        QString str = BitcoinUnits::format(walletModel->getOptionsModel()->getDisplayUnit(), wtx->credit + wtx->debit, false, separators);
+        if(showUnconfirmed)
+        {
+            if(!wtx->status.countsForBalance)
+            {
+                str = QString("[") + str + QString("]");
+            }
+        }
+        return QString(str);
+    }
+
+    QVariant data(const QModelIndex &index, int role) const
+    {
+        if (!index.isValid())
+            return QVariant();
+        TransactionRecord *rec = static_cast<TransactionRecord *>(index.internalPointer());
+
+        switch(role)
+        {
+            case Qt::DisplayRole:
+                switch (index.column()) {
+                    case BlockID:
+                        return 0;
+                    case Date:
+                        return formatTxDate(rec);
+                    case TxID:
+                        return rec->getTxID();
+                    case Amount:
+                        return formatTxAmount(rec, true, BitcoinUnits::separatorAlways);
+                }
+                break;
+        }
+
+        return QVariant();
+    }
+
+    int columnCount(const QModelIndex &parent) const
+    {
+        Q_UNUSED(parent);
+        return columns.length();
+    }
+
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const
+    {
+        if(orientation == Qt::Horizontal)
+        {
+            if(role == Qt::DisplayRole)
+            {
+                return columns[section];
+            }
+            else if (role == Qt::TextAlignmentRole)
+            {
+                return Qt::AlignLeft;
+            }
+        }
+        return QVariant();
+    }
+};
 
 DashboardButton::DashboardButton (QString title, QString description, QColor color, QIcon icon)
 {
@@ -55,17 +163,10 @@ DashboardButton::DashboardButton (QString title, QString description, QColor col
 
 void DashboardButton::paintEvent(QPaintEvent *event)
 {
-    // call the base class paint event method
-    // this will draw the base class content
-    QWidget::paintEvent(event);
-
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    //painter.setPen(QPen(QColor("#03405569")));
-    //painter.setBrush(QBrush(QColor("#03405569")));
-    QPainterPath path;
-    path.addRoundedRect(QRect(0, 0, width(), height()), 5, 5);
-    painter.fillPath(path, QColor("#1A405569"));//#03405569
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
 DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
@@ -167,6 +268,16 @@ void DashboardPage::updateDisplayUnit()
     }
 }
 
+void DashboardPage::resizeEvent(QResizeEvent *event) {
+    int width = this->width() - 100;
+    listTransactions->setColumnWidth(0, width * 0.06);
+    listTransactions->setColumnWidth(1, width * 0.55);
+    listTransactions->setColumnWidth(2, width * 0.154);
+    listTransactions->setColumnWidth(3, width * 0.242);
+
+    QWidget::resizeEvent(event);
+}
+
 void DashboardPage::SetupTransactionList(int nNumItems)
 {
     //listTransactions->setMinimumHeight(nNumItems * (DECORATION_SIZE + 2));
@@ -174,7 +285,7 @@ void DashboardPage::SetupTransactionList(int nNumItems)
     if(walletModel && walletModel->getOptionsModel())
     {
         // Set up transaction list
-        filter.reset(new TransactionFilterProxy());
+        filter.reset(new LatestTransactionFilterProxy(walletModel));
         filter->setSourceModel(walletModel->getTransactionTableModel());
         filter->setLimit(nNumItems);
         filter->setDynamicSortFilter(true);
@@ -183,7 +294,13 @@ void DashboardPage::SetupTransactionList(int nNumItems)
         filter->sort(TransactionTableModel::Status, Qt::DescendingOrder);
 
         listTransactions->setModel(filter.get());
-        //listTransactions->setModelColumn(TransactionTableModel::ToAddress);
+        listTransactions->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        listTransactions->setAlternatingRowColors(true);
+        listTransactions->setSelectionBehavior(QAbstractItemView::SelectRows);
+        listTransactions->setSelectionMode(QAbstractItemView::ExtendedSelection);
+        listTransactions->sortByColumn(TransactionTableModel::Status, Qt::DescendingOrder);
+        listTransactions->verticalHeader()->hide();
+        listTransactions->horizontalHeader()->setStretchLastSection(true);
     }
 }
 

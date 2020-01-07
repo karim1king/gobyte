@@ -169,6 +169,112 @@ void DashboardButton::paintEvent(QPaintEvent *event)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
+MasternodesChart::MasternodesChart(QList<QString> typeColors)
+{
+    colors = typeColors;
+    std::reverse(colors.begin(), colors.end());
+    masterNodes = QList<qreal>({0.2, 0.2, 0.3, 0.3});
+    setFixedSize(150, 150);
+
+    numLabelStr = QString("<span style='font-size: 18px;color: #FFFFFF;'>%1</span><br>Masternodes");
+    QLabel* numLabel = new QLabel(numLabelStr.arg(46));
+    numLabel->setAlignment(Qt::AlignCenter);
+    QHBoxLayout* layout = new QHBoxLayout();
+    layout->addWidget(numLabel);
+    setLayout (layout);
+}
+
+void MasternodesChart::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+    p.translate(4, 4);
+    p.setRenderHint(QPainter::Antialiasing);
+
+    const qreal spacing = 2;
+    qreal startAngle = 90;
+
+    for (int i = 0; i < masterNodes.size(); ++i)
+    {
+        int spanAngle = masterNodes[i] * 360 - spacing;
+
+        QPen pen;
+        pen.setCapStyle(Qt::FlatCap);
+        pen.setColor(QColor(colors[i]));
+        pen.setWidth(8);
+        p.setPen(pen);
+        p.drawArc(QRectF(0, 0, 140, 140), startAngle * 16, spanAngle * 16);
+
+        startAngle += (spanAngle + spacing);
+    }
+}
+
+class TypeCircle : public QWidget
+{
+    QColor circleColor;
+
+public:
+    TypeCircle(QString color)
+    {
+        circleColor = color;
+        setFixedSize(10, 10);
+    }
+
+    void paintEvent(QPaintEvent *event)
+    {
+        QPainter p(this);
+        p.setRenderHint(QPainter::Antialiasing);
+        p.setPen(Qt::NoPen);
+        p.setBrush(QBrush(circleColor));
+        p.drawEllipse(0, 0, 8, 8);
+    }
+};
+
+DashboardChart::DashboardChart()
+{
+    QLabel* titleLabel = new QLabel("My masternodes");
+    titleLabel->setObjectName("titleLabel");
+    titleLabel->setFixedHeight(27);
+
+    QGridLayout* gridLayout = new QGridLayout();
+    gridLayout->addWidget(titleLabel, 0, 0, 1, 2);
+    gridLayout->setSpacing(11);
+
+    for (int i = 0; i < types.size(); ++i)
+    {
+        QLabel* label = new QLabel();
+        label->setObjectName("descriptionLabel");
+        gridLayout->addWidget(new TypeCircle(colors[i]), i + 1, 0);
+        gridLayout->addWidget(label, i + 1, 1);
+        typeLabels << label;
+    }
+
+    QHBoxLayout* hLayout = new QHBoxLayout();
+    MasternodesChart* chartView = new MasternodesChart(colors);
+    hLayout->addWidget(chartView);
+    hLayout->addLayout(gridLayout);
+
+    hLayout->setContentsMargins(32,28,32,28);
+    hLayout->setSpacing(40);
+
+    setLayout(hLayout);
+
+    updateValues();
+}
+
+void DashboardChart::updateValues()
+{
+    for (int i = 0; i < types.size(); ++i)
+        typeLabels[i]->setText((types[i] + "<span style='color: #FFFFFF;'> %1</span>").arg(17));
+}
+
+void DashboardChart::paintEvent(QPaintEvent *event)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
 DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
 {
     //QWidget* widget = new QWidget;
@@ -179,21 +285,17 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     QString theme = GUIUtil::getThemeName();
     QIcon icon (":/icons/" + theme + "/export");
 
-/*    QLabel* iconLabel = new QLabel();
-    iconLabel->setPixmap(icon.pixmap(QSize(64, 64)));
-    layout->addWidget(iconLabel, 0, 0);*/
     QLabel* dashboardLabel = new QLabel("Dashboard");
     dashboardLabel->setObjectName("dashboardLabel");
     dashboardLabel->setFixedHeight(42);
     layout->addWidget(dashboardLabel, 0, 0);
 
     QHBoxLayout* hLayout = new QHBoxLayout();
-    DashboardButton* btn = new DashboardButton("", "", "", icon);
-    btn->setFixedHeight(196);
-    hLayout->addWidget(btn);
+    DashboardChart* chart = new DashboardChart();
+    chart->setFixedHeight(196);
+    hLayout->addWidget(chart);
 
-
-    btn = new DashboardButton("Passive income", "Receive passive income by using your GBX coins to form masternodes.", "#1AB551FD", QIcon(":/icons/passive_income"));
+    DashboardButton* btn = new DashboardButton("Passive income", "Receive passive income by using your GBX coins to form masternodes.", "#1AB551FD", QIcon(":/icons/passive_income"));
     btn->setFixedHeight(196);
     hLayout->addWidget(btn);
 
@@ -225,10 +327,6 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     btn = new DashboardButton("Mobile application", "To have instant access to your GBX coins use our mobile application", "#1A1FDB8C", QIcon(":/icons/mobile_application"));
     btn->setFixedHeight(200);
     layout->addWidget(btn, 3, 2);
-
-
-    //widget->setStyleSheet("background-color: #232F3B; border-radius: 7px;");
-    //widget->setLayout(layout);
 
     setLayout(layout);
 }

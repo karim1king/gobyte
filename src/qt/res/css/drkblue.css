@@ -27,6 +27,11 @@ QTableView::item:selected { /* Table Item Selected */
     color:#333;
 }
 
+DashboardChart{
+    background: #1A405569;
+    border-radius: 5px;
+}
+
 DashboardButton{
     background: #1A405569;
     border-radius: 5px;
@@ -52,6 +57,15 @@ line-height: 150%;
 color: #FFFFFF;
 }
 
+MasternodesChart QLabel{
+font-family: Exo 2;
+font-style: normal;
+font-weight: normal;
+font-size: 12px;
+line-height: 100%;
+color: #A7BDD1;
+}
+
 DashboardButton > QPushButton {
 padding: 7px 16px;
 font-family: Roboto;
@@ -62,7 +76,7 @@ line-height: 150%;
 letter-spacing: 0.02em;
 }
 
-DashboardButton > QLabel#descriptionLabel{
+DashboardPage QLabel#descriptionLabel{
 font-family: Roboto;
 font-style: normal;
 font-weight: normal;

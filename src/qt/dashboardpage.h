@@ -7,6 +7,7 @@
 
 #include <QWidget>
 #include <QTableWidget>
+#include <QLabel>
 #include <memory>
 
 class DashboardButton : public QWidget
@@ -15,6 +16,33 @@ class DashboardButton : public QWidget
 public:
     DashboardButton (QString title, QString description, QColor color, QIcon icon);
     void paintEvent(QPaintEvent *event);
+};
+
+class MasternodesChart : public QWidget
+{
+    Q_OBJECT
+public:
+    MasternodesChart(QList<QString> typeColors);
+    void paintEvent(QPaintEvent *);
+
+private:
+    QString numLabelStr;
+    QList<qreal> masterNodes;
+    QList<QString> colors;
+};
+
+class DashboardChart : public QWidget
+{
+    Q_OBJECT
+public:
+    DashboardChart();
+    void paintEvent(QPaintEvent *event);
+
+private:
+    void updateValues();
+    const QList<QString> types {"Enabled", "New start required", "Watchdog expired", "Expired"};
+    const QList<QString> colors {"#1FDB8C", "#2C9BFF", "#BB62FF", "#FFB82E"};
+    QList<QLabel*> typeLabels;
 };
 
 class DashboardPage : public QWidget

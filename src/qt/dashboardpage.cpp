@@ -9,6 +9,7 @@
 #include <QTableWidget>
 #include <QAbstractItemDelegate>
 #include <QDateTime>
+#include <QTimer>
 
 #include "transactiontablemodel.h"
 #include "init.h"
@@ -19,9 +20,22 @@
 #include "clientmodel.h"
 #include "transactionrecord.h"
 #include "addresstablemodel.h"
+#include "masternodeman.h"
 
 #define NUM_ITEMS 5
 #define NUM_ITEMS_ADV 7
+
+static std::map<MasterNodesState, QString> master_nodes_types {
+    {MasterNodesState::Enabled, "Enabled"},
+    {MasterNodesState::NewStartReq, "New start required"},
+    {MasterNodesState::WatchdogExp, "Watchdog expired"},
+    {MasterNodesState::Expired, "Expired"}};
+
+static std::map<MasterNodesState, QString> master_nodes_colors {
+    {MasterNodesState::Enabled, "#1FDB8C"},
+    {MasterNodesState::NewStartReq, "#2C9BFF"},
+    {MasterNodesState::WatchdogExp, "#BB62FF"},
+    {MasterNodesState::Expired, "#FFB82E"}};
 
 class LatestTransactionFilterProxy : public TransactionFilterProxy
 {
@@ -169,19 +183,33 @@ void DashboardButton::paintEvent(QPaintEvent *event)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-MasternodesChart::MasternodesChart(QList<QString> typeColors)
+MasternodesChart::MasternodesChart()
 {
-    colors = typeColors;
-    std::reverse(colors.begin(), colors.end());
-    masterNodes = QList<qreal>({0.2, 0.2, 0.3, 0.3});
     setFixedSize(150, 150);
 
     numLabelStr = QString("<span style='font-size: 18px;color: #FFFFFF;'>%1</span><br>Masternodes");
-    QLabel* numLabel = new QLabel(numLabelStr.arg(46));
+    numLabel = new QLabel(numLabelStr.arg(0));
     numLabel->setAlignment(Qt::AlignCenter);
     QHBoxLayout* layout = new QHBoxLayout();
     layout->addWidget(numLabel);
     setLayout (layout);
+}
+
+void MasternodesChart::updateValues(std::map<MasterNodesState, int> values)
+{
+    qreal sum = 0;
+    for (auto iter : values)
+        sum += iter.second;
+
+    if (sum != 0)
+    {
+        for (auto iter : values)
+            masterNodes[iter.first] = iter.second / sum;
+    }
+
+    numLabel->setText(numLabelStr.arg(sum));
+
+    update();
 }
 
 void MasternodesChart::paintEvent(QPaintEvent *)
@@ -193,13 +221,13 @@ void MasternodesChart::paintEvent(QPaintEvent *)
     const qreal spacing = 2;
     qreal startAngle = 90;
 
-    for (int i = 0; i < masterNodes.size(); ++i)
+    for (auto iter = masterNodes.rbegin(); iter != masterNodes.rend(); ++iter)
     {
-        int spanAngle = masterNodes[i] * 360 - spacing;
+        int spanAngle = iter->second * 360 - spacing;
 
         QPen pen;
         pen.setCapStyle(Qt::FlatCap);
-        pen.setColor(QColor(colors[i]));
+        pen.setColor(QColor(master_nodes_colors[iter->first]));
         pen.setWidth(8);
         p.setPen(pen);
         p.drawArc(QRectF(0, 0, 140, 140), startAngle * 16, spanAngle * 16);
@@ -239,17 +267,20 @@ DashboardChart::DashboardChart()
     gridLayout->addWidget(titleLabel, 0, 0, 1, 2);
     gridLayout->setSpacing(11);
 
-    for (int i = 0; i < types.size(); ++i)
+    int rowIndex = 1;
+    for (auto iter : master_nodes_types)
     {
-        QLabel* label = new QLabel();
+        QLabel* label = new QLabel(iter.second);
         label->setObjectName("descriptionLabel");
-        gridLayout->addWidget(new TypeCircle(colors[i]), i + 1, 0);
-        gridLayout->addWidget(label, i + 1, 1);
-        typeLabels << label;
+        gridLayout->addWidget(new TypeCircle(master_nodes_colors[iter.first]), rowIndex, 0);
+        gridLayout->addWidget(label, rowIndex, 1);
+        statesLabels[iter.first] = label;
+
+        ++rowIndex;
     }
 
     QHBoxLayout* hLayout = new QHBoxLayout();
-    MasternodesChart* chartView = new MasternodesChart(colors);
+    chartView = new MasternodesChart();
     hLayout->addWidget(chartView);
     hLayout->addLayout(gridLayout);
 
@@ -257,14 +288,15 @@ DashboardChart::DashboardChart()
     hLayout->setSpacing(40);
 
     setLayout(hLayout);
-
-    updateValues();
 }
 
-void DashboardChart::updateValues()
+void DashboardChart::updateValues(const std::map<MasterNodesState, int>& values)
 {
-    for (int i = 0; i < types.size(); ++i)
-        typeLabels[i]->setText((types[i] + "<span style='color: #FFFFFF;'> %1</span>").arg(17));
+    for (auto iter : values)
+        if (auto label = statesLabels[iter.first])
+            label->setText((master_nodes_types[iter.first] + "<span style='color: #FFFFFF;'> %1</span>").arg(iter.second));
+
+    chartView->updateValues(values);
 }
 
 void DashboardChart::paintEvent(QPaintEvent *event)
@@ -291,10 +323,9 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     layout->addWidget(dashboardLabel, 0, 0);
 
     QHBoxLayout* hLayout = new QHBoxLayout();
-    DashboardChart* chart = new DashboardChart();
+    chart = new DashboardChart();
     chart->setFixedHeight(196);
     hLayout->addWidget(chart);
-
     DashboardButton* btn = new DashboardButton("Passive income", "Receive passive income by using your GBX coins to form masternodes.", "#1AB551FD", QIcon(":/icons/passive_income"));
     btn->setFixedHeight(196);
     hLayout->addWidget(btn);
@@ -329,6 +360,51 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     layout->addWidget(btn, 3, 2);
 
     setLayout(layout);
+
+    QTimer* timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateNodeList()));
+    timer->start(1000);
+}
+
+void DashboardPage::setClientModel(ClientModel* model)
+{
+    this->clientModel = model;
+    if(model) {
+        // try to update list when masternode count changes
+        connect(clientModel, SIGNAL(strMasternodesChanged(QString)), this, SLOT(updateNodeList()));
+    }
+}
+
+void DashboardPage::updateNodeList()
+{
+    std::map<COutPoint, CMasternode> mapMasternodes = mnodeman.GetFullMasternodeMap();
+    std::map<MasterNodesState, int> masterNodesStates;
+
+    std::map<MasterNodesState, int> numOfMasterNodesByState ={
+                            {MasterNodesState::Enabled, 0},
+                            {MasterNodesState::NewStartReq, 0},
+                            {MasterNodesState::WatchdogExp, 0},
+                            {MasterNodesState::Expired, 0}};
+
+    for(auto& mnpair : mapMasternodes)
+    {
+        MasterNodesState state;
+        CMasternode mn = mnpair.second;
+        if (mn.IsEnabled())
+            state = MasterNodesState::Enabled;
+        else if (mn.IsNewStartRequired())
+            state = MasterNodesState::NewStartReq;
+        else if (mn.IsWatchdogExpired())
+            state = MasterNodesState::WatchdogExp;
+        else if (mn.IsExpired())
+            state = MasterNodesState::Expired;
+        else
+            continue;
+
+        numOfMasterNodesByState[state]++;
+    }
+
+    chart->updateValues(numOfMasterNodesByState);
 }
 
 void DashboardPage::setWalletModel(WalletModel *model)

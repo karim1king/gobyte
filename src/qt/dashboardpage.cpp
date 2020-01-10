@@ -142,7 +142,7 @@ public:
     }
 };
 
-DashboardButton::DashboardButton (QString title, QString description, QColor color, QIcon icon)
+DashboardButton::DashboardButton (QString title, QString description, QColor color, QIcon icon, bool withLinkButton)
 {
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setSpacing(18);
@@ -155,9 +155,6 @@ DashboardButton::DashboardButton (QString title, QString description, QColor col
     descriptionLabel->setWordWrap (true);
     descriptionLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     descriptionLabel->setFixedWidth(250);
-    QPushButton* linkButton = new QPushButton(QString::fromUtf8("Learn more \u2192"));
-    linkButton->setFixedSize(115, 32);
-    linkButton->setStyleSheet(linkButton->styleSheet() + "background: " + color.name(QColor::HexArgb) + "; color:" + color.name() + ";");
 
     QLabel* iconLabel = new QLabel();
     iconLabel->setPixmap(icon.pixmap(QSize(20, 20)));
@@ -170,7 +167,36 @@ DashboardButton::DashboardButton (QString title, QString description, QColor col
 
     layout->addLayout(hLayout);
     layout->addWidget(descriptionLabel);
-    layout->addWidget(linkButton);
+
+    if (withLinkButton)
+    {
+        QPushButton* linkButton = new QPushButton(QString::fromUtf8("Learn more \u2192"));
+        linkButton->setFixedSize(115, 32);
+        linkButton->setStyleSheet(linkButton->styleSheet() + "background: " + color.name(QColor::HexArgb) + "; color:" + color.name() + ";");
+
+        layout->addWidget(linkButton);
+    }
+    else
+    {
+        QHBoxLayout* hBtnLayout = new QHBoxLayout();
+        hBtnLayout->setSpacing(8);
+
+        QList<QString> icons = {"apple_store", "google_play"};
+        for (auto& iconName : icons)
+        {
+            QPushButton* button = new QPushButton();
+            button->setIcon(QIcon(":/icons/" + iconName));
+            button->setIconSize(QSize(32, 32));
+            hBtnLayout->addWidget(button);
+
+            button->setFixedSize(33, 33);
+            button->setStyleSheet(button->styleSheet() + "border-radius: 16px;background: #00000000;" + "color:" + color.name() + ";");
+        }
+
+        hBtnLayout->addStretch();
+
+        layout->addLayout(hBtnLayout);
+    }
 
     setLayout(layout);
 }
@@ -355,7 +381,7 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     btn->setFixedHeight(200);
     layout->addWidget(btn, 3, 1);
 
-    btn = new DashboardButton("Mobile application", "To have instant access to your GBX coins use our mobile application", "#1A1FDB8C", QIcon(":/icons/mobile_application"));
+    btn = new DashboardButton("Mobile application", "To have instant access to your GBX coins use our mobile application", "#1A1FDB8C", QIcon(":/icons/mobile_application"), false);
     btn->setFixedHeight(200);
     layout->addWidget(btn, 3, 2);
 

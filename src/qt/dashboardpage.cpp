@@ -105,7 +105,7 @@ public:
             case Qt::DisplayRole:
                 switch (index.column()) {
                     case BlockID:
-                        return 0;
+                        return rec->blockIndex;
                     case Date:
                         return formatTxDate(rec);
                     case TxID:

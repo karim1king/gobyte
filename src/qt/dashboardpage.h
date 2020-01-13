@@ -66,7 +66,7 @@ public:
     void resizeEvent(QResizeEvent *event);
 
 private Q_SLOTS:
-    void updateNodeList();
+    void updateMyNodeList();
     void updateAdvancedPSUI(bool fShowAdvancedPSUI);
     void updateDisplayUnit();
     void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, const CAmount& anonymizedBalance,

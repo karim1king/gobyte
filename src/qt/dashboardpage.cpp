@@ -21,6 +21,7 @@
 #include "transactionrecord.h"
 #include "addresstablemodel.h"
 #include "masternodeman.h"
+#include "masternodeconfig.h"
 
 #define NUM_ITEMS 5
 #define NUM_ITEMS_ADV 7
@@ -419,7 +420,7 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     setLayout(layout);
 
     QTimer* timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(updateNodeList()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(updateMyNodeList()));
     timer->start(1000);
 }
 
@@ -434,27 +435,28 @@ void CommunitySection::paintEvent(QPaintEvent *event)
 void DashboardPage::setClientModel(ClientModel* model)
 {
     this->clientModel = model;
-    if(model) {
-        // try to update list when masternode count changes
-        connect(clientModel, SIGNAL(strMasternodesChanged(QString)), this, SLOT(updateNodeList()));
-    }
 }
 
-void DashboardPage::updateNodeList()
+void DashboardPage::updateMyNodeList()
 {
-    std::map<COutPoint, CMasternode> mapMasternodes = mnodeman.GetFullMasternodeMap();
-    std::map<MasterNodesState, int> masterNodesStates;
-
     std::map<MasterNodesState, int> numOfMasterNodesByState ={
                             {MasterNodesState::Enabled, 0},
                             {MasterNodesState::NewStartReq, 0},
                             {MasterNodesState::WatchdogExp, 0},
                             {MasterNodesState::Expired, 0}};
 
-    for(auto& mnpair : mapMasternodes)
+    BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries())
     {
+        int32_t nOutputIndex = 0;
+        if(!ParseInt32(mne.getOutputIndex(), &nOutputIndex))
+            continue;
+
+        CMasternode mn;
+        bool fFound = mnodeman.Get(COutPoint(uint256S(mne.getTxHash()), nOutputIndex), mn);
+        if (!fFound)
+            continue;
+
         MasterNodesState state;
-        CMasternode mn = mnpair.second;
         if (mn.IsEnabled())
             state = MasterNodesState::Enabled;
         else if (mn.IsNewStartRequired())

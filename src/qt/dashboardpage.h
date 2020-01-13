@@ -48,6 +48,14 @@ private:
     MasternodesChart* chartView;
 };
 
+class CommunitySection : public QWidget
+{
+    Q_OBJECT
+public:
+    CommunitySection();
+    void paintEvent(QPaintEvent *event);
+};
+
 class DashboardPage : public QWidget
 {
     Q_OBJECT

@@ -142,6 +142,43 @@ public:
     }
 };
 
+CommunitySection::CommunitySection()
+{
+    QLabel* titleLabel = new QLabel("Community");
+    titleLabel->setObjectName("titleLabel");
+    QLabel* descriptionLabel = new QLabel("Want to meet other GoByte supporters? Check out our social media links");
+    descriptionLabel->setObjectName("descriptionLabel");
+    descriptionLabel->setWordWrap(true);
+    descriptionLabel->setFixedWidth(249);
+
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    vLayout->setSpacing(10);
+    vLayout->addWidget(titleLabel);
+    vLayout->addWidget(descriptionLabel);
+
+    QHBoxLayout* hLayoutButtons = new QHBoxLayout();
+    hLayoutButtons->setSpacing(24);
+
+    QStringList icons {"instagram", "facebook", "m_community", "discord_community", "youtube", "telegram", "reddit", "twitter"};
+    for (int i = 0; i < icons.size(); ++i)
+    {
+        QPushButton* button = new QPushButton();
+        button->setIcon(QIcon(":/icons/" + icons[i]));
+        button->setIconSize(QSize(22, 22));
+        button->setFixedSize(48, 48);
+        hLayoutButtons->addWidget(button);
+    }
+
+    QHBoxLayout* hLayout = new QHBoxLayout();
+    hLayout->addLayout(vLayout);
+    hLayout->addLayout(hLayoutButtons);
+    hLayout->setSpacing(50);
+    hLayout->setContentsMargins(32,25,32,25);
+    hLayout->addStretch();
+
+    setLayout(hLayout);
+}
+
 DashboardButton::DashboardButton (QString title, QString description, QColor color, QIcon icon, bool withLinkButton)
 {
     QVBoxLayout* layout = new QVBoxLayout();
@@ -193,8 +230,7 @@ DashboardButton::DashboardButton (QString title, QString description, QColor col
             button->setStyleSheet(button->styleSheet() + "border-radius: 16px;background: #00000000;" + "color:" + color.name() + ";");
         }
 
-        hBtnLayout->addStretch();
-
+        hBtnLayout->setAlignment(Qt::AlignLeft);
         layout->addLayout(hBtnLayout);
     }
 
@@ -338,7 +374,7 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     //QWidget* widget = new QWidget;
     QGridLayout* layout = new QGridLayout();
     layout->setSpacing(16);
-    layout->setContentsMargins(32,43,32,43);
+    layout->setContentsMargins(32,43,32,15);
 
     QString theme = GUIUtil::getThemeName();
     QIcon icon (":/icons/" + theme + "/export");
@@ -385,11 +421,23 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     btn->setFixedHeight(200);
     layout->addWidget(btn, 3, 2);
 
+    CommunitySection* community = new CommunitySection();
+    community->setFixedHeight(123);
+    layout->addWidget(community, 4, 0, 1, 3);
+
     setLayout(layout);
 
     QTimer* timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateNodeList()));
     timer->start(1000);
+}
+
+void CommunitySection::paintEvent(QPaintEvent *event)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
 void DashboardPage::setClientModel(ClientModel* model)

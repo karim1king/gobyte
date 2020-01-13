@@ -10,6 +10,16 @@ background: #1A405569;
 border-radius: 5px;
 }
 
+CommunitySection {
+    background: #1A405569;
+    border-radius: 5px;
+}
+
+CommunitySection QPushButton {
+    background: #33405569;
+    border-radius: 5px;
+}
+
 .QTableView { /* Table - has to be selected as a class otherwise it throws off QCalendarWidget */
     background:transparent;
     alternate-background-color: #405569;

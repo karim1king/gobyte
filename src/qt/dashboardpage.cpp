@@ -57,6 +57,12 @@ public:
         columns << tr("Block") << tr("Transaction ID") << BitcoinUnits::getAmountColumnTitle(walletModel->getOptionsModel()->getDisplayUnit()) << tr("Timestamp");
     }
 
+    void updateDisplayUnit()
+    {
+        if (columns.size() > 2)
+            columns[2] = BitcoinUnits::getAmountColumnTitle(walletModel->getOptionsModel()->getDisplayUnit());
+    }
+
     QString formatTxDate(const TransactionRecord *wtx) const
     {
         if(wtx->time)
@@ -64,21 +70,6 @@ public:
             return GUIUtil::dateTimeStr(wtx->time);
         }
         return QString();
-    }
-
-    QString lookupAddress(const std::string &address, bool tooltip) const
-    {
-        QString label = walletModel->getAddressTableModel()->labelForAddress(QString::fromStdString(address));
-        QString description;
-        if(!label.isEmpty())
-        {
-            description += label;
-        }
-        if(label.isEmpty() || tooltip)
-        {
-            description += QString(" (") + QString::fromStdString(address) + QString(")");
-        }
-        return description;
     }
 
     QString formatTxAmount(const TransactionRecord *wtx, bool showUnconfirmed, BitcoinUnits::SeparatorStyle separators) const
@@ -502,7 +493,7 @@ void DashboardPage::setWalletModel(WalletModel *model)
 
 void DashboardPage::updateDisplayUnit()
 {
-    if(walletModel && walletModel->getOptionsModel())
+    if(filter && walletModel && walletModel->getOptionsModel())
     {
 /*        nDisplayUnit = walletModel->getOptionsModel()->getDisplayUnit();
         if(currentBalance != -1)
@@ -512,6 +503,7 @@ void DashboardPage::updateDisplayUnit()
         // Update txdelegate->unit with the current unit
         txdelegate->unit = nDisplayUnit;*/
 
+        ((LatestTransactionFilterProxy*)filter.get())->updateDisplayUnit();
         listTransactions->update();
     }
 }

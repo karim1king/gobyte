@@ -10,6 +10,7 @@ class BalanceBar : public QWidget
     Q_OBJECT
 public:
     explicit BalanceBar(const QList<QAction*>& actionsList, QWidget *parent = nullptr);
+    void paintEvent(QPaintEvent *event);
 
 //signals:
 

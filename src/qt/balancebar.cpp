@@ -105,32 +105,58 @@ BalanceBar::BalanceBar(const QList<QAction*>& actionsList, QWidget *parent) : QW
     toolBar->setOrientation(Qt::Vertical);
     toolBar->setIconSize(QSize(24, 24));
 
-    QLabel* totalBalance = new QLabel("Total Balance<br>9.49<br> Currency <span style=\"color:#1FB0D0\">USD</span>");
+    QLabel* logoLabel = new QLabel();
+    logoLabel->setPixmap(QIcon(":/icons/logo").pixmap(QSize(82, 32)));
+    logoLabel->setMaximumSize(82, 32);
+    QLabel* totalBalance = new QLabel("Total Balance");
     totalBalance->setObjectName("totalBalance");
+    //totalBalance->setFixedHeight(15);
 
-    totalBalance->setFixedHeight(123);
-/*    QListWidget *walletsListView = new QListWidget();
-    new WalletInfoButtonWidget(walletsListView);
-    walletsListView->setSelectionMode(QAbstractItemView::NoSelection);
-    walletsListView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    walletsListView->setStyleSheet("QListWidget::item { margin-bottom: 10px;}");//QListWidget {padding: 0px;}
+    QLabel* balanceValue = new QLabel("5,100,562.00");
+    balanceValue->setObjectName("balanceValue");
+    balanceValue->setFixedHeight(30);
 
-    QList<WalletInfo> list = QList<WalletInfo>() << WalletInfo {"Main adress", "3", "9.49 USD"} << WalletInfo{"Trezor adress", "0", "0 USD"};
-    for (int i = 0; i < 6; ++i)
-        list << list;
-    for (int i = 0; i < list.size(); ++i)
-        new WalletInfoWidget(list[i], walletsListView);
+    QHBoxLayout* hLogoLayout1 = new QHBoxLayout();
+    hLogoLayout1->setAlignment(Qt::AlignLeft);
+    hLogoLayout1->addWidget(logoLabel);
+    QHBoxLayout* hLogoLayout2 = new QHBoxLayout();
+    hLogoLayout2->addWidget(balanceValue);
+    hLogoLayout2->setAlignment(Qt::AlignLeft);
 
-    walletsListView->setObjectName ("walletsListView");*/
+    QVBoxLayout* logoLayout = new QVBoxLayout();
+    logoLayout->setContentsMargins(12,0,5,15);
+    logoLayout->addLayout(hLogoLayout1);
+    QSpacerItem* spacer = new QSpacerItem(1, 21, QSizePolicy::Fixed, QSizePolicy::Fixed);
+    logoLayout->addItem(spacer);
+    logoLayout->addWidget(totalBalance);
+    logoLayout->addLayout(hLogoLayout2);
+    logoLayout->setSpacing(0);
+    logoLayout->setAlignment(Qt::AlignLeft);
+
+    QWidget *line = new QWidget;
+    line->setFixedHeight(1);
+    line->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    line->setStyleSheet(QString("background-color: #1A405569;"));
 
     QVBoxLayout* balanceBarLayout = new QVBoxLayout();
     balanceBarLayout->setSpacing(0);
-    balanceBarLayout->setContentsMargins(16,0,16,0);
-    balanceBarLayout->addWidget(totalBalance);
+    balanceBarLayout->setContentsMargins(16,25,16,0);
+    balanceBarLayout->addLayout(logoLayout);
+    balanceBarLayout->addWidget(line);
+    spacer = new QSpacerItem(1, 24, QSizePolicy::Fixed, QSizePolicy::Fixed);
+    balanceBarLayout->addItem(spacer);
     balanceBarLayout->addWidget(toolBar);
     balanceBarLayout->setAlignment(Qt::AlignTop);
     setLayout (balanceBarLayout);
 
 
     QPalette pal = palette();
+}
+
+void BalanceBar::paintEvent(QPaintEvent *event)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }

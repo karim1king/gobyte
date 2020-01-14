@@ -1,8 +1,24 @@
+BalanceBar{
+background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #1A405569, stop: 1 transparent);
+}
+
 QLabel#totalBalance {
-font-family: Roboto;
+font-family: Exo 2;
 font-style: normal;
-font-size: 24px;
-color: #EEEEEE;
+font-weight: normal;
+font-size: 12px;
+line-height: 100%;
+color: #A7BDD1;
+}
+
+QLabel#balanceValue {
+font-family: Exo 2;
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 100%;
+letter-spacing: -0.02em;
+color: #2C9BFF;
 }
 
 DashboardPage > QWidget#tableLayout{

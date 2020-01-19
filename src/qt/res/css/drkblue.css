@@ -1,3 +1,25 @@
+SendCoinsEntry{
+    background: #1A405569;
+    border-radius: 5px;
+}
+
+SendCoinsEntry QLabel#miniTitle{
+    font-family: Exo 2;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 100%;
+    color: #A7BDD1;
+}
+
+SendCoinsEntry QLabel#titleLabel{
+    font: 18px 'Exo 2', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%;
+    color: #FFFFFF;
+}
+
 BalanceBar{
 background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #1A405569, stop: 1 transparent);
 }
@@ -216,7 +238,13 @@ color:#333333;
 }
 
 .QCheckBox { /* Checkbox Labels */
-color:#333333;
+font-family: Exo 2;
+font-style: normal;
+font-weight: normal;
+font-size: 14px;
+display: flex;
+align-items: center;
+color: #A7BDD1;
 background-color:transparent;
 }
 
@@ -225,12 +253,18 @@ background-color:transparent;
 }
 
 .QValidatedLineEdit, .QLineEdit { /* Text Entry Fields */
-border: 1px solid #82C3E6;
-font-size:11px;
-min-height:25px;
+color: #80A7BDD1;
+border-radius: 5px;
+border: 1px solid rgba(167, 189, 209, 0.15);
+
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 14px;
+line-height: 100%;
 outline:0;
-padding:3px;
-background-color:#fcfcfc;
+padding:13px;
+background-color:#161F27;
 }
 
 .QLineEdit:!focus {
@@ -238,7 +272,7 @@ font-size:12px;
 }
 
 .QValidatedLineEdit:disabled, .QLineEdit:disabled {
-background-color:#f2f2f2;
+background-color:#161F27;
 }
 
 /*******************************************************/
@@ -326,25 +360,29 @@ selection-color:transparent;
 }
 
 QAbstractSpinBox {
-border:1px solid #82C3E6;
 padding: 3px 5px 3px 5px;
-background:#fcfcfc;
-min-height:25px;
-color:#818181;
+min-height:40px;
+
+background: rgba(0, 0, 0, 0.1);
+border: 1px solid rgba(167, 189, 209, 0.15);
+box-sizing: border-box;
+border-radius: 5px;
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 14px;
+line-height: 100%;
+color: #FFFFFF;
 }
 
 QAbstractSpinBox::up-button {
 subcontrol-origin: border;
 subcontrol-position: top right;
 width:21px;
-background:#fcfcfc;
-border-left:0px;
-border-right:1px solid #82C3E6;
-border-top:1px solid #82C3E6;
-border-bottom:0px;
-padding-right:1px;
+background:transparent;
+padding-right:11px;
 padding-left:5px;
-padding-top:2px;
+padding-top:11px;
 }
 
 QAbstractSpinBox::up-arrow {
@@ -355,14 +393,10 @@ QAbstractSpinBox::down-button {
 subcontrol-origin: border;
 subcontrol-position: bottom right;
 width:21px;
-background:#fcfcfc;
-border-top:0px;
-border-left:0px;
-border-right:1px solid #82C3E6;
-border-bottom:1px solid #82C3E6;
-padding-right:1px;
+background:transparent;
+padding-right:11px;
 padding-left:5px;
-padding-bottom:2px;
+padding-bottom:11px;
 }
 
 QAbstractSpinBox::down-arrow {
@@ -374,8 +408,8 @@ spacing: 5px;
 }
 
 QCheckBox::indicator {
-width: 16px;
-height: 16px;
+width: 20px;
+height: 20px;
 }
 
 QCheckBox::indicator:unchecked {
@@ -779,7 +813,7 @@ margin-bottom:5px;
 
 QDialog#OptionsDialog QValidatedLineEdit, QDialog#OptionsDialog QValidatedLineEdit:disabled, QDialog#OptionsDialog QLineEdit, QDialog#OptionsDialog QLineEdit:disabled {
 qproperty-alignment: 'AlignVCenter | AlignLeft';
-min-height:20px;
+min-height:40px;
 margin-top:0px;
 margin-bottom:0px;
 padding-top:1px;

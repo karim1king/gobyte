@@ -56,6 +56,9 @@ public:
     */
     QWidget *setupTabChain(QWidget *prev);
 
+    QWidget* getAmountSpin();
+    QWidget* getUnitBox();
+
 Q_SIGNALS:
     void valueChanged();
 

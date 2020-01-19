@@ -27,7 +27,7 @@ public:
         currentUnit(BitcoinUnits::GBX),
         singleStep(100000) // satoshis
     {
-        setAlignment(Qt::AlignRight);
+        setAlignment(Qt::AlignLeft);
 
         connect(lineEdit(), SIGNAL(textEdited(QString)), this, SIGNAL(valueChanged()));
     }
@@ -197,15 +197,16 @@ BitcoinAmountField::BitcoinAmountField(QWidget *parent) :
     amount = new AmountSpinBox(this);
     amount->setLocale(QLocale::c());
     amount->installEventFilter(this);
-    amount->setMaximumWidth(170);
+    amount->setMaximumWidth(179);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(amount);
     unit = new QValueComboBox(this);
     unit->setModel(new BitcoinUnits(this));
+    unit->setFixedWidth(137);
     layout->addWidget(unit);
-    layout->addStretch(1);
     layout->setContentsMargins(0,0,0,0);
+    layout->setSpacing(16);
 
     setLayout(layout);
 
@@ -218,6 +219,16 @@ BitcoinAmountField::BitcoinAmountField(QWidget *parent) :
 
     // Set default based on configuration
     unitChanged(unit->currentIndex());
+}
+
+QWidget* BitcoinAmountField::getAmountSpin()
+{
+    return amount;
+}
+
+QWidget* BitcoinAmountField::getUnitBox()
+{
+    return unit;
 }
 
 void BitcoinAmountField::clear()

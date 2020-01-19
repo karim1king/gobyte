@@ -6,8 +6,13 @@
 #define BITCOIN_QT_SENDCOINSENTRY_H
 
 #include "walletmodel.h"
+#include "bitcoinamountfield.h"
+#include "qvalidatedlineedit.h"
 
 #include <QStackedWidget>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QLabel>
 
 class WalletModel;
 class PlatformStyle;
@@ -21,13 +26,14 @@ namespace Ui {
  * Stacked widget, with different UIs for payment requests
  * with a strong payee identity.
  */
-class SendCoinsEntry : public QStackedWidget
+class SendCoinsEntry : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit SendCoinsEntry(const PlatformStyle *platformStyle, QWidget *parent = 0);
     ~SendCoinsEntry();
+    void paintEvent(QPaintEvent *event);
 
     void setModel(WalletModel *model);
     bool validate();
@@ -62,8 +68,14 @@ private Q_SLOTS:
     void updateDisplayUnit();
 
 private:
+    QPushButton* deleteButton;
+    QCheckBox* checkboxSubtractFeeFromAmount;
+    QValidatedLineEdit* payTo;
+    BitcoinAmountField* payAmount;
+    QLineEdit* addAsLabel;
+    QLabel* titleLabel;
+
     SendCoinsRecipient recipient;
-    Ui::SendCoinsEntry *ui;
     WalletModel *model;
     const PlatformStyle *platformStyle;
 

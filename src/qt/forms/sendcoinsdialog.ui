@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>931</width>
-    <height>706</height>
+    <height>746</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -859,7 +859,7 @@
                  <string notr="true">font-weight:bold;</string>
                 </property>
                 <property name="text">
-                 <string>Transaction Fee:</string>
+                 <string>Transaction Fee</string>
                 </property>
                </widget>
               </item>
@@ -909,6 +909,15 @@
           </item>
           <item>
            <widget class="QPushButton" name="buttonMinimizeFee">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="toolTip">
              <string>collapse fee-settings</string>
             </property>
@@ -1276,7 +1285,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayoutFee5" stretch="0,0,0,0,0,0,0,0,0,0">
              <property name="spacing">
-              <number>8</number>
+              <number>12</number>
              </property>
              <property name="bottomMargin">
               <number>4</number>
@@ -1297,7 +1306,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>i</string>
+                <string/>
                </property>
               </widget>
              </item>
@@ -1342,7 +1351,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>i</string>
+                <string/>
                </property>
               </widget>
              </item>
@@ -1387,7 +1396,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>i</string>
+                <string/>
                </property>
               </widget>
              </item>

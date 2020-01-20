@@ -28,6 +28,12 @@
         <file alias="warning">res/icons/warning.png</file>
         <file alias="google_play">res/icons/google_play.png</file>
         <file alias="apple_store">res/icons/apple_store.png</file>
+        <file alias="white_arrow_right">res/icons/white_arrow_right.png</file>
+        <file alias="info_icon">res/icons/info_icon.png</file>
+        <file alias="book_icon">res/icons/book_icon.png</file>
+        <file alias="gray_x">res/icons/gray_x.png</file>
+        <file alias="green_plus">res/icons/green_plus.png</file>
+        <file alias="blue_x">res/icons/blue_x.png</file>
     </qresource>
     <qresource prefix="/icons/drkblue">
         <file alias="address-book">res/icons/drkblue/address-book.png</file>

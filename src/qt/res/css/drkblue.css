@@ -12,16 +12,16 @@ SendCoinsEntry QLabel#miniTitle{
     color: #A7BDD1;
 }
 
-SendCoinsEntry QLabel#titleLabel{
-    font: 18px 'Exo 2', sans-serif;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 150%;
-    color: #FFFFFF;
+QLabel#titleLabel{
+font: 18px 'Exo 2', sans-serif;
+font-style: normal;
+font-weight: 500;
+line-height: 150%;
+color: #FFFFFF;
 }
 
 BalanceBar{
-background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #1A405569, stop: 1 transparent);
+background-color: #1A405569;
 }
 
 QLabel#totalBalance {
@@ -1359,12 +1359,6 @@ QDialog#SendCoinsDialog .QFrame#frameCoinControl > .QLabel { /* Default Font Col
 font-weight:normal;
 }
 
-QDialog#SendCoinsDialog .QFrame#frameCoinControl .QPushButton#pushButtonCoinControl { /* Coin Control Inputs Button */
-padding-left:10px;
-padding-right:10px;
-min-height:25px;
-}
-
 QDialog#SendCoinsDialog .QFrame#frameCoinControl .QLabel#labelCoinControlFeatures { /* Coin Control Header */
 color:#3398CC;
 font-weight:bold;
@@ -1395,42 +1389,97 @@ background:transparent;
 }
 
 QDialog#SendCoinsDialog .QPushButton#sendButton { /* Send Button */
-padding-left:10px;
-padding-right:10px;
+background-image: url(":/icons/white_arrow_right");
+background-repeat: no-repeat;
+background-position: right;
+background-origin: content;
+padding-right: 29px;
+/*qproperty-icon: url(':/icons/white_arrow_right');*/
+text-align:left;
+background-color: #2C9BFF;
+border-radius: 5px;
+font-family: Roboto;
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 150%;
+letter-spacing: 0.02em;
+color: #FFFFFF;
 }
 
+QDialog#SendCoinsDialog QPushButton#pushButtonInfo, QPushButton#pushButtonInfo_2, QPushButton#pushButtonInfo_3 {
+background-color: transparent;
+qproperty-icon: url(':/icons/info_icon');
+
+}
 QDialog#SendCoinsDialog .QPushButton#clearButton { /* Clear Button */
-background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: .01 #f6f6f6, stop: .1 rgba(250, 250, 250, 128), stop: .95 rgba(250, 250, 250, 255), stop: 1 #ebebeb);
-border:1px solid #d2d2d2;
-color:#616161;
-padding-left:10px;
-padding-right:10px;
+qproperty-icon: url(':/icons/blue_x');
+background-color: rgba(44, 155, 255, 0.1);
+border-radius: 5px;
+color:#2C9BFF;
+font-family: Roboto;
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 150%;
+letter-spacing: 0.02em;
 }
 
 QDialog#SendCoinsDialog .QPushButton#clearButton:hover {
-background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: .01 #f6f6f6, stop: .1 rgba(240, 240, 240, 255), stop: .95 rgba(240, 240, 240, 255), stop: 1 #ebebeb);
-color:#333;
+background: rgba(44, 155, 255, 0.3);
+border-radius: 5px;
 }
 
 QDialog#SendCoinsDialog .QPushButton#clearButton:pressed {
-border:1px solid #9e9e9e;
+background: rgba(44, 155, 255, 0.5);
+border-radius: 5px;
 }
 
+QDialog#SendCoinsDialog .QPushButton#pushButtonCoinControl {
+    background-color: rgba(44, 155, 255, 0.1);
+    border-radius: 5px;
+    color:#2C9BFF;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 150%;
+    letter-spacing: 0.02em;
+}
+
+QDialog#SendCoinsDialog .QPushButton#pushButtonCoinControl:hover {
+    background: rgba(44, 155, 255, 0.3);
+    border-radius: 5px;
+}
+
+QDialog#SendCoinsDialog .QPushButton#pushButtonCoinControl:pressed {
+    background: rgba(44, 155, 255, 0.5);
+    border-radius: 5px;
+}
+
+
 QDialog#SendCoinsDialog .QPushButton#addButton { /* Add Button */
-background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: .01 #f6f6f6, stop: .1 rgba(250, 250, 250, 128), stop: .95 rgba(250, 250, 250, 255), stop: 1 #ebebeb);
-border:1px solid #d2d2d2;
-color:#616161;
-padding-left:10px;
-padding-right:10px;
+qproperty-icon: url(':/icons/green_plus');
+background: rgba(31, 219, 140, 0.1);
+border-radius: 5px;
+
+font-family: Roboto;
+font-style: normal;
+font-weight: 500;
+font-size: 12px;
+line-height: 150%;
+letter-spacing: 0.02em;
+color: #1FDB8C;
 }
 
 QDialog#SendCoinsDialog .QPushButton#addButton:hover {
-background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: .01 #f6f6f6, stop: .1 rgba(240, 240, 240, 255), stop: .95 rgba(240, 240, 240, 255), stop: 1 #ebebeb);
-color:#333;
+background: rgba(31, 219, 140, 0.3);
+border-radius: 5px;
 }
 
 QDialog#SendCoinsDialog .QPushButton#addButton:pressed {
-border:1px solid #9e9e9e;
+background: rgba(31, 219, 140, 0.5);
+border-radius: 5px;
 }
 
 /* This QLabel uses name = "label" which conflicts with Address Book -> New Address */

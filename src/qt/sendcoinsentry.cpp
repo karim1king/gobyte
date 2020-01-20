@@ -285,6 +285,11 @@ void SendCoinsEntry::setAddress(const QString &address)
     payAmount->setFocus();
 }
 
+void SendCoinsEntry::setIndex(int index)
+{
+    titleLabel->setText("Recipient " +  QString::number(index));
+}
+
 bool SendCoinsEntry::isClear()
 {
     return payTo->text().isEmpty();// && payTo_is->text().isEmpty() && payTo_s->text().isEmpty();

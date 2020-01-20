@@ -372,7 +372,7 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     QIcon icon (":/icons/" + theme + "/export");
 
     QLabel* dashboardLabel = new QLabel("Dashboard");
-    dashboardLabel->setObjectName("dashboardLabel");
+    dashboardLabel->setObjectName("pageTitleLabel");
     dashboardLabel->setFixedHeight(42);
     layout->addWidget(dashboardLabel, 0, 0);
 

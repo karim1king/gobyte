@@ -480,6 +480,12 @@ void SendCoinsDialog::updateTabsAndLabels()
 {
     setupTabChain(0);
     coinControlUpdateLabels();
+
+    for(int i = 0; i < ui->entries->count(); ++i)
+    {
+        SendCoinsEntry* entry = qobject_cast<SendCoinsEntry*>(ui->entries->itemAt(i)->widget());
+        entry->setIndex (i + 1);
+    }
 }
 
 void SendCoinsDialog::removeEntry(SendCoinsEntry* entry)

@@ -30,6 +30,7 @@
         <file alias="apple_store">res/icons/apple_store.png</file>
         <file alias="white_arrow_right">res/icons/white_arrow_right.png</file>
         <file alias="info_icon">res/icons/info_icon.png</file>
+        <file alias="info_icon_blue">res/icons/info_icon_blue.png</file>
         <file alias="book_icon">res/icons/book_icon.png</file>
         <file alias="gray_x">res/icons/gray_x.png</file>
         <file alias="green_plus">res/icons/green_plus.png</file>

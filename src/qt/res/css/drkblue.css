@@ -278,7 +278,7 @@ background-color:#161F27;
 }
 
 .QLineEdit:!focus {
-font-size:12px;
+font-size:14px;
 }
 
 .QValidatedLineEdit:disabled, .QLineEdit:disabled {
@@ -1353,6 +1353,28 @@ background: #1A405569;
 border-radius: 5px;
 }
 
+QDialog#SendCoinsDialog QSlider::groove:horizontal {
+background: #16A7BDD1;
+border-radius: 5px;
+height: 4px;
+}
+
+QDialog#SendCoinsDialog QSlider::sub-page:horizontal
+{
+background: #2C9BFF;
+border-radius: 5px;
+height: 4px;
+}
+
+QDialog#SendCoinsDialog QSlider::handle:horizontal {
+background: #FFFFFF;
+width: 18px;
+height: 18px;
+margin-top: -7px;
+margin-bottom: -7px;
+border-radius: 9px;
+}
+
 QDialog#SendCoinsDialog .QFrame#frameCoinControl { /* Coin Control Section */
 
 }
@@ -1411,9 +1433,44 @@ color: #FFFFFF;
 
 QDialog#SendCoinsDialog QPushButton#pushButtonInfo, QPushButton#pushButtonInfo_2, QPushButton#pushButtonInfo_3 {
 background-color: transparent;
-qproperty-icon: url(':/icons/info_icon');
+background-image: url(":/icons/info_icon");
+background-repeat: no-repeat;
 
 }
+
+QDialog#SendCoinsDialog QPushButton#pushButtonInfo:hover, QPushButton#pushButtonInfo_2:hover, QPushButton#pushButtonInfo_3:hover {
+background-image: url(":/icons/info_icon_blue");
+background-repeat: no-repeat;
+}
+
+QDialog#SendCoinsDialog .QPushButton#buttonFeeKb, .QPushButton#buttonFixedFee, .QPushButton#buttonMinimum {
+background-color: #161F27;
+border-radius: 0px;
+border: 1px solid #16A7BDD1;
+font-family: Roboto;
+font-style: normal;
+font-weight: 500;
+font-size: 13px;
+line-height: 100%;
+height: 32px;
+color: #A7BDD1;
+}
+
+QDialog#SendCoinsDialog .QPushButton#buttonFeeKb {
+border-top-left-radius: 5px;
+border-bottom-left-radius: 5px;
+}
+
+QDialog#SendCoinsDialog .QPushButton#buttonMinimum {
+border-top-right-radius: 5px;
+border-bottom-right-radius: 5px;
+}
+
+QDialog#SendCoinsDialog .QPushButton#buttonFeeKb:checked, .QPushButton#buttonFixedFee:checked, .QPushButton#buttonMinimum:checked {
+background-color: #32A7BDD1;
+color: #FFFFFF;
+}
+
 QDialog#SendCoinsDialog .QPushButton#clearButton { /* Clear Button */
 qproperty-icon: url(':/icons/blue_x');
 background-color: rgba(44, 155, 255, 0.1);
@@ -1498,6 +1555,15 @@ border-radius:5px;
 padding-top:20px;
 padding-bottom:20px;*/
 min-height:27px;
+}
+
+QDialog#SendCoinsDialog QLabel#labelSmartFeeNormal, QLabel#labelSmartFeeFast{
+font-family: Exo 2;
+font-style: normal;
+font-weight: normal;
+font-size: 13px;
+line-height: 100%;
+color: #A7BDD1;
 }
 
 QDialog#SendCoinsDialog QLabel#labelBalance {

@@ -200,6 +200,7 @@ RES_ICONS = \
   qt/res/icons/apple_store.png \
   qt/res/icons/white_arrow_right.png \
   qt/res/icons/info_icon.png \
+  qt/res/icons/info_icon_blue.png \
   qt/res/icons/book_icon.png \
   qt/res/icons/gray_x.png \
   qt/res/icons/green_plus.png \

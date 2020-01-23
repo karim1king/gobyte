@@ -11,6 +11,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QDesktopServices>
+#include <QUrl>
 
 #include "transactiontablemodel.h"
 #include "init.h"

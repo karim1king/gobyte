@@ -36,7 +36,8 @@ static std::map<MasterNodesState, QString> master_nodes_colors {
     {MasterNodesState::Enabled, "#1FDB8C"},
     {MasterNodesState::NewStartReq, "#2C9BFF"},
     {MasterNodesState::WatchdogExp, "#BB62FF"},
-    {MasterNodesState::Expired, "#FFB82E"}};
+    {MasterNodesState::Expired, "#FFB82E"},
+    {MasterNodesState::NONE, "#A7BDD1"}};
 
 class LatestTransactionFilterProxy : public TransactionFilterProxy
 {
@@ -275,7 +276,11 @@ void MasternodesChart::paintEvent(QPaintEvent *)
     const qreal spacing = 2;
     qreal startAngle = 90;
 
-    for (auto iter = masterNodes.rbegin(); iter != masterNodes.rend(); ++iter)
+    std::map<MasterNodesState, qreal> values = masterNodes;
+    if (values.size() == 0)
+        values[MasterNodesState::NONE] = 1;
+
+    for (auto iter = values.rbegin(); iter != values.rend(); ++iter)
     {
         int spanAngle = iter->second * 360 - spacing;
 
@@ -392,6 +397,7 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     tableLayout->addWidget(titleLabel);
 
     listTransactions = new QTableView();
+    listTransactions->setShowGrid(false);
     tableLayout->addWidget(listTransactions);
     tableLayout->setContentsMargins(24,23,24,26);
     tableLayout->setSpacing(14);

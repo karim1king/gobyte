@@ -11,7 +11,7 @@
 #include <memory>
 #include <map>
 
-enum class MasterNodesState {Enabled, NewStartReq, WatchdogExp, Expired};
+enum class MasterNodesState {NONE, Enabled, NewStartReq, WatchdogExp, Expired};
 
 class DashboardButton : public QWidget
 {

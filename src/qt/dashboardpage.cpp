@@ -10,6 +10,7 @@
 #include <QAbstractItemDelegate>
 #include <QDateTime>
 #include <QTimer>
+#include <QDesktopServices>
 
 #include "transactiontablemodel.h"
 #include "init.h"
@@ -172,7 +173,7 @@ CommunitySection::CommunitySection()
     setLayout(hLayout);
 }
 
-DashboardButton::DashboardButton (QString title, QString description, QColor color, QIcon icon, bool withLinkButton)
+DashboardButton::DashboardButton (QString title, QString description, QColor color, QIcon icon, QString urlLink)
 {
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setSpacing(18);
@@ -198,9 +199,11 @@ DashboardButton::DashboardButton (QString title, QString description, QColor col
     layout->addLayout(hLayout);
     layout->addWidget(descriptionLabel);
 
-    if (withLinkButton)
+    if (!urlLink.isEmpty())
     {
         QPushButton* linkButton = new QPushButton(QString::fromUtf8("Learn more \u2192"));
+        connect(linkButton, &QPushButton::clicked, this, [=]{ QDesktopServices::openUrl(QUrl(urlLink)); });
+
         linkButton->setFixedSize(115, 32);
         linkButton->setStyleSheet(linkButton->styleSheet() + "background: " + color.name(QColor::HexArgb) + "; color:" + color.name() + ";");
 
@@ -212,9 +215,15 @@ DashboardButton::DashboardButton (QString title, QString description, QColor col
         hBtnLayout->setSpacing(8);
 
         QList<QString> icons = {"apple_store", "google_play"};
-        for (auto& iconName : icons)
+        QList<QString> links = {"http://www.google.com", "http://www.google.com"};
+
+        for (int i = 0; i < icons.size(); ++i)
         {
+            QString iconName = icons[i];
+            QString link = links[i];
+
             QPushButton* button = new QPushButton();
+            connect(button, &QPushButton::clicked, this, [=]{ QDesktopServices::openUrl(QUrl(link)); });
             button->setIcon(QIcon(":/icons/" + iconName));
             button->setIconSize(QSize(32, 32));
             hBtnLayout->addWidget(button);
@@ -385,7 +394,10 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     chart = new DashboardChart();
     chart->setFixedHeight(196);
     hLayout->addWidget(chart);
-    DashboardButton* btn = new DashboardButton("Passive income", "Receive passive income by using your GBX coins to form masternodes.", "#1AB551FD", QIcon(":/icons/passive_income"));
+    DashboardButton* btn = new DashboardButton("Passive income",
+            "Receive passive income by using your GBX coins to form masternodes.",
+            "#1AB551FD", QIcon(":/icons/passive_income"),
+            "http://www.google.com");
     btn->setFixedHeight(196);
     hLayout->addWidget(btn);
 
@@ -407,15 +419,24 @@ DashboardPage::DashboardPage(QWidget *parent) : QWidget(parent)
     container->setObjectName("tableLayout");
     layout->addWidget(container, 2, 0, 1, 3);
 
-    btn = new DashboardButton("Hardware wallets", "Secure your GBX and more. Give yourself peace of mind by knowing that your coins are safe.", "#1AFFB82E", QIcon(":/icons/hardware_wallets"));
+    btn = new DashboardButton("Hardware wallets",
+            "Secure your GBX and more. Give yourself peace of mind by knowing that your coins are safe.",
+            "#1AFFB82E", QIcon(":/icons/hardware_wallets"),
+            "http://www.google.com");
     btn->setFixedHeight(200);
     layout->addWidget(btn, 3, 0);
 
-    btn = new DashboardButton("Bounty", "Additional methods of earning extra GBX coins to multiply your funds", "#1A2C9BFF", QIcon(":/icons/bounty"));
+    btn = new DashboardButton("Bounty",
+            "Additional methods of earning extra GBX coins to multiply your funds",
+            "#1A2C9BFF", QIcon(":/icons/bounty"),
+            "http://www.google.com");
     btn->setFixedHeight(200);
     layout->addWidget(btn, 3, 1);
 
-    btn = new DashboardButton("Mobile application", "To have instant access to your GBX coins use our mobile application", "#1A1FDB8C", QIcon(":/icons/mobile_application"), false);
+    btn = new DashboardButton("Mobile application",
+            "To have instant access to your GBX coins use our mobile application",
+            "#1A1FDB8C", QIcon(":/icons/mobile_application"),
+            "");
     btn->setFixedHeight(200);
     layout->addWidget(btn, 3, 2);
 

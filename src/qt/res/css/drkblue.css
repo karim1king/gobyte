@@ -1,3 +1,16 @@
+QToolTip{
+max-width: 376px;
+min-width: 376px;
+padding: 22px 12px 22px 14px;
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 13px;
+line-height: 150;
+color: #A7BDD1;
+background: #283847;
+box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2);
+}
 SendCoinsEntry{
 background: #1A405569;
 border-radius: 5px;

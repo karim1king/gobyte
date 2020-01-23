@@ -30,6 +30,9 @@
 #include <QScrollBar>
 #include <QSettings>
 #include <QTextDocument>
+#include <QToolTip>
+#include <QProxyStyle>
+#include <QPainter>
 
 SendCoinsDialog::SendCoinsDialog(const PlatformStyle *platformStyle, QWidget *parent) :
     QDialog(parent),
@@ -699,6 +702,7 @@ void SendCoinsDialog::setMinimumFee()
 {
 //    ui->radioCustomPerKilobyte->setChecked(true);
     ui->customFee->setValue(CWallet::GetRequiredFee(1000));
+    ui->sliderSmartFee->setValue(ui->sliderSmartFee->minimum());
 }
 
 void SendCoinsDialog::updateFeeSectionControls()
@@ -950,23 +954,82 @@ void SendCoinsDialog::coinControlUpdateLabels()
     }
 }
 
+class CustomStyle : public QProxyStyle
+{
+    int styleHint (QStyle::StyleHint hint, const QStyleOption *option = nullptr, const QWidget *widget = nullptr, QStyleHintReturn *returnData = nullptr) const
+    {
+        switch (hint)
+        {
+            case QStyle::SH_ToolTip_Mask: {
+
+                baseStyle()->styleHint(hint, option, widget, returnData);
+                QVector <QPointF> vertices;
+                int width = widget->width();
+                int height = widget->height();
+                vertices << QPointF(0, 0)
+                         << QPointF(width, 0)
+                         << QPointF(width, height * 0.98)
+                         << QPointF(width * 0.52, height * 0.98)
+                         << QPointF(width * 0.5, height)
+                         << QPointF(width * 0.48, height * 0.98)
+                         << QPointF(0, height * 0.98);
+
+                QPolygonF balloonPoly = QPolygonF(vertices);
+                QRegion maskRegion(balloonPoly.toPolygon(), Qt::WindingFill);
+                if(QStyleHintReturnMask *mask = qstyleoption_cast<QStyleHintReturnMask *>(returnData))
+                    mask->region = maskRegion;
+
+                return true;
+            }
+            default:
+                return baseStyle()->styleHint(hint, option, widget, returnData);
+        }
+
+
+    }
+};
+
 bool SendCoinsDialog::eventFilter(QObject* obj, QEvent *event)
 {
-    // This function repeatedly call for those QObjects
-    // which have installed eventFilter (Step 2)
-
     if (event->type() == QEvent::Enter)
     {
+        QString infoText;
+        QWidget* eventWidget;
         if (obj == (QObject*)ui->pushButtonInfo)
         {
-            return true;
+            eventWidget = ui->pushButtonInfo;
+            infoText = "InstantSend functions by setting a flag on the transaction, "
+                       "causing deterministic selection of a quorum of 10 masternodes for each input spent in an InstantSend transaction. <br><br>"
+                       "The masternodes examine the input, and if a majority determines it has at least six confirmations,"
+                       " they then accept the transaction.<br><br> The input is then locked until the transaction has been confirmed in six mined blocks, "
+                       "at which point the output can be used as an input in another InstantSend transaction.";
         }
         else if (obj == (QObject*)ui->pushButtonInfo_2)
         {
-            return true;
+            eventWidget = ui->pushButtonInfo_2;
+            infoText = "Note that the receiving wallet must also be aware of InstantSend in order to be able to immediately "
+                       "continue with the transaction or display an appropriate notification that the transaction should be considered locked. <br><br>"
+                       "If the receiving wallet is not aware of InstantSend, it will simply appear as a normal transaction and you will need to wait for standard block confirmations.";
         }
         else if (obj == (QObject*)ui->pushButtonInfo_3)
         {
+            eventWidget = ui->pushButtonInfo_3;
+            infoText = "You can only use PrivateSend for payments once you have mixed enough Dash to make up the amount you are trying to send. "
+                       "Because the mixing process takes time, it must be done in advance before you create the send transaction. <br><br>"
+                       "A PrivateSend transaction is effectively the same as any other transaction on the blockchain, "
+                       "but it draws only from input addresses where the denomination has previously been mixed to ensure privacy of funds. <br><br>"
+                       "Because several input addresses are usually required to make up the amount you are trying to send, "
+                       "a PrivateSend transaction will usually take up more space (in kilobytes) on the blockchain, and therefore will be charged a slightly higher fee.";
+        }
+
+        infoText = "<p style=\"line-height:150%;\">" + infoText + "</p>";
+
+        if (!infoText.isEmpty())
+        {
+            CustomStyle* cuStyle = new CustomStyle();
+            cuStyle->setBaseStyle(style());
+            setStyle(cuStyle);
+            QToolTip::showText(eventWidget->mapToGlobal(QPoint()) - QPoint(386 / 2, 0), infoText, this);
             return true;
         }
     }

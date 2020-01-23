@@ -9,6 +9,7 @@
 
 #include <QDialog>
 #include <QString>
+#include <QProxyStyle>
 
 static const int MAX_SEND_POPUP_ENTRIES = 10;
 
@@ -61,6 +62,7 @@ private:
     Ui::SendCoinsDialog *ui;
     ClientModel *clientModel;
     WalletModel *model;
+    QProxyStyle* toolTipStyle;
     bool fNewRecipientAllowed;
     void send(QList<SendCoinsRecipient> recipients, QString strFee, QString strFunds);
     bool fFeeMinimized;

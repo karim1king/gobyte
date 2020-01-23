@@ -34,6 +34,41 @@
 #include <QProxyStyle>
 #include <QPainter>
 
+class CustomStyle : public QProxyStyle
+{
+    int styleHint (QStyle::StyleHint hint, const QStyleOption *option = nullptr, const QWidget *widget = nullptr, QStyleHintReturn *returnData = nullptr) const
+    {
+        switch (hint)
+        {
+            case QStyle::SH_ToolTip_Mask: {
+
+                baseStyle()->styleHint(hint, option, widget, returnData);
+                QVector <QPointF> vertices;
+                int width = widget->width();
+                int height = widget->height();
+                vertices << QPointF(0, 0)
+                         << QPointF(width, 0)
+                         << QPointF(width, height * 0.98)
+                         << QPointF(width * 0.52, height * 0.98)
+                         << QPointF(width * 0.5, height)
+                         << QPointF(width * 0.48, height * 0.98)
+                         << QPointF(0, height * 0.98);
+
+                QPolygonF balloonPoly = QPolygonF(vertices);
+                QRegion maskRegion(balloonPoly.toPolygon(), Qt::WindingFill);
+                if(QStyleHintReturnMask *mask = qstyleoption_cast<QStyleHintReturnMask *>(returnData))
+                    mask->region = maskRegion;
+
+                return true;
+            }
+            default:
+                return baseStyle()->styleHint(hint, option, widget, returnData);
+        }
+
+
+    }
+};
+
 SendCoinsDialog::SendCoinsDialog(const PlatformStyle *platformStyle, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SendCoinsDialog),
@@ -43,6 +78,10 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *platformStyle, QWidget *pa
     fFeeMinimized(true),
     platformStyle(platformStyle)
 {
+    toolTipStyle = new CustomStyle();
+    toolTipStyle->setBaseStyle(style());
+    setStyle(toolTipStyle);
+
     ui->setupUi(this);
     QString theme = GUIUtil::getThemeName();
 
@@ -954,41 +993,6 @@ void SendCoinsDialog::coinControlUpdateLabels()
     }
 }
 
-class CustomStyle : public QProxyStyle
-{
-    int styleHint (QStyle::StyleHint hint, const QStyleOption *option = nullptr, const QWidget *widget = nullptr, QStyleHintReturn *returnData = nullptr) const
-    {
-        switch (hint)
-        {
-            case QStyle::SH_ToolTip_Mask: {
-
-                baseStyle()->styleHint(hint, option, widget, returnData);
-                QVector <QPointF> vertices;
-                int width = widget->width();
-                int height = widget->height();
-                vertices << QPointF(0, 0)
-                         << QPointF(width, 0)
-                         << QPointF(width, height * 0.98)
-                         << QPointF(width * 0.52, height * 0.98)
-                         << QPointF(width * 0.5, height)
-                         << QPointF(width * 0.48, height * 0.98)
-                         << QPointF(0, height * 0.98);
-
-                QPolygonF balloonPoly = QPolygonF(vertices);
-                QRegion maskRegion(balloonPoly.toPolygon(), Qt::WindingFill);
-                if(QStyleHintReturnMask *mask = qstyleoption_cast<QStyleHintReturnMask *>(returnData))
-                    mask->region = maskRegion;
-
-                return true;
-            }
-            default:
-                return baseStyle()->styleHint(hint, option, widget, returnData);
-        }
-
-
-    }
-};
-
 bool SendCoinsDialog::eventFilter(QObject* obj, QEvent *event)
 {
     if (event->type() == QEvent::Enter)
@@ -1026,10 +1030,7 @@ bool SendCoinsDialog::eventFilter(QObject* obj, QEvent *event)
 
         if (!infoText.isEmpty())
         {
-            CustomStyle* cuStyle = new CustomStyle();
-            cuStyle->setBaseStyle(style());
-            setStyle(cuStyle);
-            QToolTip::showText(eventWidget->mapToGlobal(QPoint()) - QPoint(386 / 2, 0), infoText, this);
+            QToolTip::showText(eventWidget->mapToGlobal(QPoint()) - QPoint(386 / 2, 0), infoText, eventWidget);
             return true;
         }
     }

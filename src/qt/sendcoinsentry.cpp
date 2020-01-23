@@ -17,6 +17,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QPainter>
+#include <QAction>
 
 SendCoinsEntry::SendCoinsEntry(const PlatformStyle *platformStyle, QWidget *parent) :
     QWidget(parent),
@@ -27,9 +28,12 @@ SendCoinsEntry::SendCoinsEntry(const PlatformStyle *platformStyle, QWidget *pare
 //        ui->payToLayout->setSpacing(4);
 
     deleteButton = new QPushButton();
+    deleteButton->setObjectName("deleteButton");
+    deleteButton->setFixedSize (12, 12);
     checkboxSubtractFeeFromAmount = new QCheckBox("Substract fee from amount");
     payTo = new QValidatedLineEdit(this);
-    //payTo->setMinimumHeight(40);
+    QAction *bookAction = payTo->addAction(QIcon(":/icons/book_icon"), QLineEdit::TrailingPosition);
+    connect(bookAction, &QAction::triggered, this, &SendCoinsEntry::on_addressBookButton_clicked);
     payAmount = new BitcoinAmountField();
     addAsLabel = new QLineEdit();
     titleLabel = new QLabel("Recipient");
@@ -45,6 +49,7 @@ SendCoinsEntry::SendCoinsEntry(const PlatformStyle *platformStyle, QWidget *pare
     layout->setContentsMargins(32,24,22,32);
 
     layout->addWidget(titleLabel, 0, 0);
+    layout->addWidget(deleteButton, 0, 2, Qt::AlignRight);
     QSpacerItem* spacer = new QSpacerItem(1, 8, QSizePolicy::Fixed, QSizePolicy::Fixed);
     layout->addItem(spacer, 1, 0);
 
@@ -83,7 +88,7 @@ SendCoinsEntry::SendCoinsEntry(const PlatformStyle *platformStyle, QWidget *pare
     // These icons are needed on Mac also!
     //addressBookButton->setIcon(QIcon(":/icons/" + theme + "/address-book"));
     //pasteButton->setIcon(QIcon(":/icons/" + theme + "/editpaste"));
-    deleteButton->setIcon(QIcon(":/icons/" + theme + "/remove"));
+//    deleteButton->setIcon(QIcon(":/icons/" + theme + "/remove"));
 //    ui->deleteButton_is->setIcon(QIcon(":/icons/" + theme + "/remove"));
 //    ui->deleteButton_s->setIcon(QIcon(":/icons/" + theme + "/remove"));
 

@@ -81,9 +81,9 @@ public:
         switch(wtx->type)
         {
             case TransactionRecord::RecvWithAddress:
-                return tr("Received");
+                return tr("Received with");
             case TransactionRecord::RecvFromOther:
-                return tr("Received");
+                return tr("Received from");
             case TransactionRecord::RecvWithPrivateSend:
                 return tr("Received via PrivateSend");
             case TransactionRecord::SendToAddress:

@@ -76,6 +76,7 @@ background:transparent;
 alternate-background-color: #32405569;
 background-color: transparent;
 border:0px solid #fff;
+color: #A7BDD1;
 }
 
 QTableView::item { /* Table Item */

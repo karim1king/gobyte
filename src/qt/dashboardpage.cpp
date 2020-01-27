@@ -48,7 +48,7 @@ private:
     WalletModel *walletModel;
 
     enum ColumnIndex {
-        BlockID = 0,
+        Type = 0,
         TxID = 1,
         Amount = 2,
         Date = 3,
@@ -58,7 +58,7 @@ public:
     LatestTransactionFilterProxy(WalletModel *model)
     {
         walletModel = model;
-        columns << tr("Block") << tr("Transaction ID") << BitcoinUnits::getAmountColumnTitle(walletModel->getOptionsModel()->getDisplayUnit()) << tr("Timestamp");
+        columns << tr("Transaction Type") << tr("Transaction ID") << BitcoinUnits::getAmountColumnTitle(walletModel->getOptionsModel()->getDisplayUnit()) << tr("Timestamp");
     }
 
     void updateDisplayUnit()
@@ -76,6 +76,40 @@ public:
         return QString();
     }
 
+    QString formatTxType(const TransactionRecord *wtx) const
+    {
+        switch(wtx->type)
+        {
+            case TransactionRecord::RecvWithAddress:
+                return tr("Received");
+            case TransactionRecord::RecvFromOther:
+                return tr("Received");
+            case TransactionRecord::RecvWithPrivateSend:
+                return tr("Received via PrivateSend");
+            case TransactionRecord::SendToAddress:
+            case TransactionRecord::SendToOther:
+                return tr("Sent to");
+            case TransactionRecord::SendToSelf:
+                return tr("Payment to yourself");
+            case TransactionRecord::Generated:
+                return tr("Mined");
+
+            case TransactionRecord::PrivateSendDenominate:
+                return tr("PrivateSend Denominate");
+            case TransactionRecord::PrivateSendCollateralPayment:
+                return tr("PrivateSend Collateral Payment");
+            case TransactionRecord::PrivateSendMakeCollaterals:
+                return tr("PrivateSend Make Collateral Inputs");
+            case TransactionRecord::PrivateSendCreateDenominations:
+                return tr("PrivateSend Create Denominations");
+            case TransactionRecord::PrivateSend:
+                return tr("PrivateSend");
+
+            default:
+                return QString();
+        }
+    }
+
     QString formatTxAmount(const TransactionRecord *wtx, bool showUnconfirmed, BitcoinUnits::SeparatorStyle separators) const
     {
         QString str = BitcoinUnits::format(walletModel->getOptionsModel()->getDisplayUnit(), wtx->credit + wtx->debit, false, separators);
@@ -89,18 +123,20 @@ public:
         return QString(str);
     }
 
-    QVariant data(const QModelIndex &index, int role) const
+    QVariant data(const QModelIndex& index, int role) const
     {
         if (!index.isValid())
             return QVariant();
-        TransactionRecord *rec = static_cast<TransactionRecord *>(index.internalPointer());
+
+        QModelIndex sourceParent = mapToSource (index);
+        TransactionRecord *rec = static_cast<TransactionRecord *>(sourceParent.internalPointer());
 
         switch(role)
         {
             case Qt::DisplayRole:
                 switch (index.column()) {
-                    case BlockID:
-                        return rec->blockIndex;
+                    case Type:
+                        return formatTxType(rec);
                     case Date:
                         return formatTxDate(rec);
                     case TxID:
@@ -292,6 +328,9 @@ void MasternodesChart::paintEvent(QPaintEvent *)
 
     for (auto iter = values.rbegin(); iter != values.rend(); ++iter)
     {
+        if (iter->second == 0)
+            continue;
+
         int spanAngle = iter->second * 360 - spacing;
 
         QPen pen;
@@ -540,10 +579,10 @@ void DashboardPage::updateDisplayUnit()
 
 void DashboardPage::resizeEvent(QResizeEvent *event) {
     int width = this->width() - 100;
-    listTransactions->setColumnWidth(0, width * 0.06);
+    listTransactions->setColumnWidth(0, width * 0.16);
     listTransactions->setColumnWidth(1, width * 0.55);
     listTransactions->setColumnWidth(2, width * 0.154);
-    listTransactions->setColumnWidth(3, width * 0.242);
+    listTransactions->setColumnWidth(3, width * 0.142);
 
     QWidget::resizeEvent(event);
 }

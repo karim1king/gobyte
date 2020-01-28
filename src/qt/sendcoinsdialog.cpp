@@ -492,7 +492,6 @@ void SendCoinsDialog::clear()
         ui->entries->takeAt(0)->widget()->deleteLater();
     }
     addEntry();
-    addEntry();
 
     updateTabsAndLabels();
 }
@@ -546,7 +545,7 @@ void SendCoinsDialog::removeEntry(SendCoinsEntry* entry)
     entry->hide();
 
     // If the last entry is about to be removed add an empty one
-    if (ui->entries->count() == 2)
+    if (ui->entries->count() == 1)
         addEntry();
 
     entry->deleteLater();

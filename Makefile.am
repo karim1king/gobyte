@@ -100,7 +100,7 @@ OSX_APP_BUILT=$(OSX_APP)/Contents/PkgInfo $(OSX_APP)/Contents/Resources/empty.lp
 
 if BUILD_DARWIN
 $(OSX_DMG): $(OSX_APP_BUILT) $(OSX_PACKAGING)
-	$(OSX_DEPLOY_SCRIPT) $(OSX_APP) -add-qt-tr $(OSX_QT_TRANSLATIONS) -translations-dir=$(QT_TRANSLATION_DIR) -dmg -fancy $(OSX_FANCY_PLIST) -verbose 2
+	$(OSX_DEPLOY_SCRIPT) $(OSX_APP) -add-qt-tr $(OSX_QT_TRANSLATIONS) -translations-dir=$(QT_TRANSLATION_DIR) -dmg -fancy $(OSX_FANCY_PLIST) -verbose 2 && find . -name \*.dmg -maxdepth 1 -exec cp {} $(bindir)/$@ \;
 
 deploydir: $(OSX_DMG)
 else
@@ -114,7 +114,7 @@ $(APP_DIST_DIR)/Applications:
 $(APP_DIST_EXTRAS): $(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/GoByte-Qt
 
 $(OSX_DMG): $(APP_DIST_EXTRAS)
-	$(GENISOIMAGE) -no-cache-inodes -D -l -probe -V "GoByte-Core" -no-pad -r -dir-mode 0755 -apple -o $@ dist
+	$(GENISOIMAGE) -no-cache-inodes -D -l -probe -V "GoByte-Core" -no-pad -r -dir-mode 0755 -apple -o $@ dist && find . -name \*.dmg -maxdepth 1 -exec cp {} $(bindir)/$@ \;
 
 $(APP_DIST_DIR)/.background/$(OSX_BACKGROUND_IMAGE): contrib/macdeploy/$(OSX_BACKGROUND_IMAGE)
 	$(MKDIR_P) $(@D)
@@ -123,7 +123,7 @@ $(APP_DIST_DIR)/.DS_Store: contrib/macdeploy/DS_Store
 	$(INSTALL) $< $@
 
 $(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/GoByte-Qt: $(OSX_APP_BUILT) $(OSX_PACKAGING)
-	INSTALLNAMETOOL=$(INSTALLNAMETOOL)  OTOOL=$(OTOOL) STRIP=$(STRIP) $(OSX_DEPLOY_SCRIPT) $(OSX_APP) -translations-dir=$(QT_TRANSLATION_DIR) -add-qt-tr $(OSX_QT_TRANSLATIONS) -verbose 2
+	INSTALLNAMETOOL=$(INSTALLNAMETOOL)  OTOOL=$(OTOOL) STRIP=$(STRIP) $(OSX_DEPLOY_SCRIPT) $(OSX_APP) -translations-dir=$(QT_TRANSLATION_DIR) -add-qt-tr $(OSX_QT_TRANSLATIONS) -verbose 2 && find . -name \*.dmg -maxdepth 1 -exec cp {} $(bindir)/$@ \;
 
 deploydir: $(APP_DIST_EXTRAS)
 endif

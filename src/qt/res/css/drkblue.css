@@ -369,7 +369,11 @@ padding-right:1px;
 padding-left:1px;
 }
 
-QComboBox QAbstractItemView::item { margin:4px; }
+QComboBox QAbstractItemView::item {
+margin:4px;
+selection-background-color: #fff;
+color:#818181;
+}
 
 QComboBox::item {
 color:#818181;

@@ -1432,8 +1432,7 @@ background-image: url(":/icons/white_arrow_right");
 background-repeat: no-repeat;
 background-position: right;
 background-origin: content;
-padding-right: 29px;
-/*qproperty-icon: url(':/icons/white_arrow_right');*/
+padding-right: 10px;
 text-align:left;
 background-color: #2C9BFF;
 border-radius: 5px;

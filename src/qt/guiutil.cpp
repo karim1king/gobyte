@@ -919,12 +919,14 @@ QString loadStyleSheet()
     QString cssName;
     QString theme = settings.value("theme", "").toString();
 
-    if(!theme.isEmpty()){
-        cssName = QString(":/css/") + theme;
-    }
-    else {
-        cssName = QString(":/css/light");
-        settings.setValue("theme", "light");
+//    if(!theme.isEmpty())
+//    {
+//        cssName = QString(":/css/") + theme;
+//    }
+//    else
+    {
+        cssName = QString(":/css/drkblue");
+        settings.setValue("theme", "drkblue");
     }
 
     QFile qFile(cssName);

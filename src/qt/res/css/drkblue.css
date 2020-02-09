@@ -1432,17 +1432,13 @@ background:transparent;
 }
 
 QDialog#SendCoinsDialog .QPushButton#sendButton { /* Send Button */
-background-image: url(":/icons/white_arrow_right");
-background-repeat: no-repeat;
-background-position: right;
-background-origin: content;
-padding-right: 10px;
+qproperty-icon: url(':/icons/white_arrow_right');
+qproperty-iconSize: 28px 8px;
 text-align:left;
 background-color: #2C9BFF;
 border-radius: 5px;
 font-family: Roboto;
 font-style: normal;
-font-weight: 500;
 font-size: 14px;
 line-height: 150%;
 letter-spacing: 0.02em;

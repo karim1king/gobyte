@@ -8,9 +8,10 @@ font-weight: normal;
 font-size: 13px;
 line-height: 150;
 color: #A7BDD1;
-background: #283847;
-box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2);
+background-color: #283847;
+border: 0px; 
 }
+
 SendCoinsEntry{
 background: #1A405569;
 border-radius: 5px;
@@ -1454,6 +1455,10 @@ background-repeat: no-repeat;
 QDialog#SendCoinsDialog QPushButton#pushButtonInfo:hover, QPushButton#pushButtonInfo_2:hover, QPushButton#pushButtonInfo_3:hover {
 background-image: url(":/icons/info_icon_blue");
 background-repeat: no-repeat;
+}
+
+QDialog#SendCoinsDialog QPushButton#pushButtonInfo:pressed, QPushButton#pushButtonInfo_2:pressed, QPushButton#pushButtonInfo_3:pressed {
+border: 0px solid transparent;
 }
 
 QDialog#SendCoinsDialog .QPushButton#buttonFeeKb, .QPushButton#buttonFixedFee, .QPushButton#buttonMinimum {

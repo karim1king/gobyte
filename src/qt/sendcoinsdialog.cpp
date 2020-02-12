@@ -972,6 +972,13 @@ void SendCoinsDialog::coinControlUpdateLabels()
 
 bool SendCoinsDialog::eventFilter(QObject* obj, QEvent *event)
 {
+    if (obj != (QObject*)ui->pushButtonInfo && 
+        obj != (QObject*)ui->pushButtonInfo_2 &&
+        obj != (QObject*)ui->pushButtonInfo_3)
+    {
+        return QWidget::eventFilter(obj, event);
+    }
+
     if (event->type() == QEvent::Enter)
     {
         QString infoText;
@@ -1010,6 +1017,10 @@ bool SendCoinsDialog::eventFilter(QObject* obj, QEvent *event)
             QToolTip::showText(eventWidget->mapToGlobal(QPoint()) - QPoint(386 / 2, 0), infoText, eventWidget);
             return true;
         }
+    }
+    else if (event->type() == QEvent::MouseButtonPress)
+    {
+        return true;
     }
 
     return QWidget::eventFilter(obj, event);
